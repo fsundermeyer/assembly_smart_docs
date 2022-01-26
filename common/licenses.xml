@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<topic xmlns="http://docbook.org/ns/docbook" version="5.0" role="legal">
+ <title>GNU Licenses</title>
+ <info>
+  <dm:docmanager xmlns:dm="urn:x-suse:ns:docmanager">
+   <dm:translation>no</dm:translation>
+  </dm:docmanager>
+ </info>
+ <para> This appendix contains the GNU Free Documentation License version 1.2. </para>
+</topic>

@@ -1,0 +1,10 @@
+build/
+\#*#
+.#*
+*~
+*.xml~
+*.ent~
+*.bak
+
+# Ignore temporary dot directory
+.tmp/

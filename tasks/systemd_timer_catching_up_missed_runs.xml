@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-model href="http://docbook.org/xml/5.2/rng/docbook.rng" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://docbook.org/xml/5.2/sch/docbook.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<!DOCTYPE topic
+[
+  <!ENTITY % entities SYSTEM "../common/entity-decl.ent">
+    %entities;
+]>
+
+<topic version="5.2" xml:id="systemd-timer-catchup"
+  xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>&systemd; timer: Catching up on missed runs</title>
+ <info>
+  <abstract>
+   <para>
+    With systemd timers you can make leeway for missed timer events.
+   </para>
+  </abstract>
+ </info>
+ <para>
+   If a &systemd; timer was inactive or the system was off during the expected
+   execution time, missed events can optionally be triggered immediately when
+   the timer is activated again. To enable this, add the configuration option
+   <literal>Persisten=true</literal> to the Timer section:
+ </para>
+ <screen>[Timer]
+OnCalendar=Mon..Fri 10:00
+Persistent=true
+Unit=helloworld.service</screen>
+</topic>
