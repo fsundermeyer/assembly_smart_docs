@@ -56,6 +56,20 @@
  </itemizedlist>
 
  <important>
+  <title>User timers only run during an active session</title>
+  <para>
+   As with other systemd services started as a regular user, user timers only
+   run when the user is logged in. In case you want to start user timers at
+   boot time and continue them after log out, enable lingering for each
+   affected user:
+  </para>
+  <screen>sudo loginctl enable-linger <replaceable>USER</replaceable></screen>
+  <para>
+   For more information refer to <command>man 1 loginctl</command>.
+  </para>
+ </important>
+
+ <important>
   <title>Environment variables are not inherited</title>
   <para>
    The &systemd; user instance does not inherit environment variables set by
