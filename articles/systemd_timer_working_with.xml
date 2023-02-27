@@ -13,11 +13,14 @@
   <resource href="../concepts/systemd-timer-concept.xml" xml:id="systemd-timer-concept">
    <description>The systemd timer concept</description>
   </resource>
-  <resource href="../tasks/systemd_timer_create.xml" xml:id="systemd-create-timer">
-   <description>Creating a systemd timer</description>
+  <resource href="../references/systemd_timer_manage.xml" xml:id="systemd-timer-manage">
+   <description>Managing systemd timers</description>
   </resource>
   <resource href="../references/systemd_timer_types.xml" xml:id="systemd-timer-types">
    <description>The systemd timer types</description>
+  </resource>
+  <resource href="../tasks/systemd_timer_create.xml" xml:id="systemd-create-timer">
+   <description>Creating a systemd timer</description>
   </resource>
   <resource href="../tasks/systemd_timer_test_cal_entries.xml" xml:id="systemd-timer-test">
    <description>systemd timer: Test calendar entries</description>
@@ -25,8 +28,8 @@
   <resource href="../tasks/systemd_timer_catching_up_missed_runs.xml" xml:id="systemd-timer-catchup">
    <description>Catching up on missed runs</description>
   </resource>
-  <resource href="../references/systemd_timer_manage.xml" xml:id="systemd-timer-manage">
-   <description>Managing systemd timers</description>
+  <resource href="../tasks/systemd_timer_mailto.xml" xml:id="systemd-timer-mailto">
+   <description>Creating a systemd timer</description>
   </resource>
   <resource href="../tasks/systemd_timer_user.xml" xml:id="systemd-timer-user">
    <description>Using systemd timers as a regular user</description>
@@ -124,6 +127,12 @@
     <title>Creating a timer</title>
    </merge>
   </module>
+  <module resourceref="systemd-timer-manage">
+   <output renderas="section"/>
+   <merge>
+    <title>Managing timers</title>
+   </merge>
+  </module>
   <module resourceref="systemd-timer-types">
    <output renderas="section"/>
    <merge>
@@ -142,10 +151,9 @@
     <title>Catching up on missed runs</title>
    </merge>
   </module>
-  <module resourceref="systemd-timer-manage">
-   <output renderas="section"/>
+  <module resourceref="systemd-timer-mailto">
    <merge>
-    <title>Testing calendar entries</title>
+    <title>Getting notified by email if a timer fails</title>
    </merge>
   </module>
   <module resourceref="systemd-timer-user">
