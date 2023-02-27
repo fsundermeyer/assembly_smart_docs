@@ -12,7 +12,7 @@
   <abstract>
    <para>
     Timers can be managed with general &systemd; commands using the
-    <command>systemctl</command>. In addition to that, <command>systemctl
+    <command>systemctl</command> command. In addition to that, <command>systemctl
     list-timers</command> shows you all timers available on a host.
    </para>
   </abstract>
