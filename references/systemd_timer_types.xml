@@ -15,7 +15,9 @@
    <abstract>
     <para>
      &systemd; supports two types of timers: realtime (based on calendar) and
-     monotonic (based on events)
+     monotonic (based on events). Although timers are usually persistent,
+     systemd also allows to set up transient timers, that are only valid for
+     the current session.
     </para>
    </abstract>
   </info>
@@ -198,6 +200,66 @@ OnCalendar=Sat,Sun *-*-* 22:00</screen>
        </para>
       </listitem>
      </itemizedlist>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Transient timers</term>
+    <listitem>
+     <para>
+      Transient timers are temporary timers only valid for the current
+      session. Using these timers you can either use an existing service file
+      or directly start a program. Transient timers are invoked by running
+      <command>systemd-run</command>.
+     </para>
+     <para>
+      The following example runs the <filename>helloworld.service</filename>
+      unit every two hours:
+     </para>
+     <screen>systemd-run --on-active="2hours" --unit="helloworld.service"</screen>
+     <para>
+      To run a command directly use the following syntax. In this example the
+      script <filename>/usr/local/bin/helloworld.sh</filename> is called
+      directly:
+     </para>
+     <screen>systemd-run --on-active="2hours" /usr/local/bin/helloworld.sh</screen>
+     <para>
+      In case the command takes parameters, add them space-separated:
+     </para>
+     <screen>systemd-run --on-active="2hours" /usr/local/bin/helloworld.sh --language=pt_BR"</screen>
+     <para>
+      Transient timers can be of types monotonic or real time. The following
+      switches, working as described above, are supported:
+     </para>
+     <itemizedlist>
+      <listitem>
+       <para>
+        <option>--on-active</option>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <option>--on-startup</option>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <option>--on-unit-active</option>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <option>--on-unit-inactive</option>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <option>--on-calendar</option>
+       </para>
+      </listitem>
+     </itemizedlist>
+     <para>
+      For more information refer to <command>man 1 systemd-run</command>.
+     </para>
     </listitem>
    </varlistentry>
   </variablelist>
