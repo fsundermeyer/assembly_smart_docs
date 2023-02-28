@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Working with systemd timers</title><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" /><link rel="stylesheet" type="text/css" href="static/css/style.css" /><link rel="stylesheet" type="text/css" href="static/css/highlight.css" /><meta name="generator" content="DAPS @PACKAGE_VERSION@ (https://opensuse.github.io/daps) using SUSE XSL Stylesheets 2.81.0 (based on DocBook XSL Stylesheets 1.79.2)" /><meta name="book-title" content="Working with systemd timers" /><meta name="description" content="From running a backup script at regular intervals to starting a specific process as soon as the machine boots, there are plenty of tasks that require scheduling on a Linux system. cron has long been the go-to tool for all scheduling needs, but the switch to systemd introduced a modern way to schedule tasks: systemd timer units." /><meta name="tracker-url" content="https://bugzilla.suse.com/enter_bug.cgi" /><meta name="tracker-type" content="bsc" /><meta name="tracker-bsc-assignee" content="fs@suse.com" /><meta name="tracker-bsc-component" content="Non-product-specific 20documentation" /><meta name="tracker-bsc-product" content="Smart Docs" />
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"/><title>Working with systemd timers</title><link rel="stylesheet" type="text/css" href="static/css/style.css"/>
+<meta name="title" content="Working with systemd timers"/>
+<meta name="description" content="From running a backup script at regular intervals to starting a specific process as soon as the machine boots, there are plenty of tasks that require…"/>
+<meta name="book-title" content="Working with systemd timers"/>
+<meta name="tracker-url" content="https://bugzilla.suse.com/enter_bug.cgi"/>
+<meta name="tracker-type" content="bsc"/>
+<meta name="tracker-bsc-assignee" content="fs@suse.com"/>
+<meta name="tracker-bsc-component" content="Non-product-specific 20documentation"/>
+<meta name="tracker-bsc-product" content="Smart Docs"/>
+<meta property="og:title" content="Working with systemd timers"/>
+<meta property="og:description" content="From running a backup script at regular intervals to starting a specific process as soon as the machine boots, there are plenty of tasks that require…"/>
+<meta property="og:type" content="article"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Working with systemd timers"/>
+<meta name="twitter:description" content="From running a backup script at regular intervals to starting a specific process as soon as the machine boots, there are plenty of tasks that require…"/>
+
 <script type="text/javascript">
 
 if ( window.location.protocol.toLowerCase() != 'file:' ) {
   document.write('<link rel="stylesheet" type="text/css" href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css"></link>');
 };
 
-</script><noscript><link rel="stylesheet" type="text/css" href="https://static.opensuse.org/fonts/fonts.css" /></noscript><script src="static/js/jquery-1.10.2.min.js" type="text/javascript"></script><script src="static/js/script.js" type="text/javascript"></script><script src="static/js/highlight.min.js" type="text/javascript"></script><script>
+</script><noscript><link rel="stylesheet" type="text/css" href="https://documentation.suse.com/docserv/res/fonts/poppins/poppins.css"/></noscript><script src="static/js/jquery-1.12.4.min.js" type="text/javascript"> </script><script src="static/js/script.js" type="text/javascript"> </script><script src="static/js/highlight.min.js" type="text/javascript"> </script><script>
 
 $(document).ready(function() {
   $('.verbatim-wrap.highlight').each(function(i, block) {
@@ -17,74 +32,67 @@ hljs.configure({
   useBR: false
 });
 
-</script></head><body class="single offline js-off"><div class="bypass-block"><a href="#_content">Jump to content</a></div><div id="_outer-wrap"><div id="_white-bg"><div id="_header"><div id="_logo"><img src="static/images/logo.svg" alt="Logo" /></div><div class="crumbs inactive"><a class="single-crumb" href="#id-1" accesskey="c"><span class="single-contents-icon"></span>Working with systemd timers</a><div class="bubble-corner active-contents"></div></div><div class="clearme"></div></div></div><div id="_fixed-header-wrap" class="inactive"><div id="_fixed-header"><div class="crumbs inactive"><a class="single-crumb" href="#id-1" accesskey="c"><span class="single-contents-icon"></span>Show Contents: Working with systemd timers</a></div><div class="buttons"><a class="top-button button" href="#">Top</a><div class="clearme"></div></div><div class="clearme"></div></div><div class="active-contents bubble"><div class="bubble-container"><div id="_bubble-toc"><ol><li class="inactive"><a href="#systemd-timer-concept"><span class="number">1 </span><span class="name">The systemd timer concept</span></a></li><li class="inactive"><a href="#systemd-create-timer"><span class="number">2 </span><span class="name">Creating a timer</span></a></li><li class="inactive"><a href="#systemd-timer-types"><span class="number">3 </span><span class="name">Timer types</span></a></li><li class="inactive"><a href="#systemd-timer-test"><span class="number">4 </span><span class="name">Testing calendar entries</span></a></li><li class="inactive"><a href="#systemd-timer-catchup"><span class="number">5 </span><span class="name">Catching up on missed runs</span></a></li><li class="inactive"><a href="#systemd-timer-manage"><span class="number">6 </span><span class="name">Testing calendar entries</span></a></li><li class="inactive"><a href="#systemd-timer-user"><span class="number">7 </span><span class="name">Using timers as a regular user</span></a></li><li class="inactive"><a href="#systemd-timer-troubleshoot"><span class="number">8 </span><span class="name">Troubleshooting</span></a></li><li class="inactive"><a href="#id-1.10"><span class="number">9 </span><span class="name">Legal Notice</span></a></li><li class="inactive"><a href="#id-1.11"><span class="number">A </span><span class="name">GNU Licenses</span></a></li></ol></div><div class="clearme"></div></div></div></div><div id="_toc-bubble-wrap"></div><div id="_content" class=""><div class="documentation"><div class="article " id="id-1"><div class="titlepage"><div><div><h1 class="title">Working with systemd timers</h1></div><div><h3 class="subtitle"><em></em></h3></div><div class="abstract "><p>
-     From running a backup script at regular intervals to starting a specific
-     process as soon as the machine boots, there are plenty of tasks that
-     require scheduling on a Linux system. cron has long been the go-to tool
-     for all scheduling needs, but the switch to systemd introduced a modern
-     way to schedule tasks: systemd timer units.
-    </p><div class="variablelist "><dl class="variablelist"><dt id="id-1.1.4.2.1"><span class="term ">WHAT?</span></dt><dd><p>
-        systemd timer units as a replacement for cron.
-       </p></dd><dt id="id-1.1.4.2.2"><span class="term ">WHY?</span></dt><dd><p>
-        To give you a flexible mechanism for scheduling and managing jobs and
-        services.
-       </p></dd><dt id="id-1.1.4.2.3"><span class="term ">EFFORT?</span></dt><dd><p>
-        It takes 10 minutes to create an example systemd timer. You will need
-        up to 30 minutes to fully understand how systemd timers work.
-       </p></dd><dt id="id-1.1.4.2.4"><span class="term ">GOAL!</span></dt><dd><p>
-        Learn how to create systemd timers and understand how they work.
-       </p></dd></dl></div><div xmlns:dm="urn:x-suse:ns:docmanager" class="sect3 bridgehead"><h4 class="title" id="id-1.1.4.3"><span class="name">Requirements</span><a title="Permalink" class="permalink" href="#id-1.1.4.3">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h4></div><div class="itemizedlist "><ul class="itemizedlist"><li class="listitem "><p>Basic understanding of systemd.</p></li><li class="listitem "><p>
-       <code class="systemitem">root</code> privileges. If you are planning to use systemd timers as a
-       regular user, refer to <a class="xref" href="#systemd-timer-user" title="7. Using timers as a regular user">Section 7, “Using timers as a regular user”</a> first.
-      </p></li></ul></div></div><div class="date"><span class="imprint-label">Publication Date: </span>01/26/2022</div></div></div><div class="line"><div class="toc"><dl><dt><span class="section"><a href="#systemd-timer-concept"><span class="number">1 </span><span class="name">The systemd timer concept</span></a></span></dt><dt><span class="section"><a href="#systemd-create-timer"><span class="number">2 </span><span class="name">Creating a timer</span></a></span></dt><dt><span class="section"><a href="#systemd-timer-types"><span class="number">3 </span><span class="name">Timer types</span></a></span></dt><dt><span class="section"><a href="#systemd-timer-test"><span class="number">4 </span><span class="name">Testing calendar entries</span></a></span></dt><dt><span class="section"><a href="#systemd-timer-catchup"><span class="number">5 </span><span class="name">Catching up on missed runs</span></a></span></dt><dt><span class="section"><a href="#systemd-timer-manage"><span class="number">6 </span><span class="name">Testing calendar entries</span></a></span></dt><dt><span class="section"><a href="#systemd-timer-user"><span class="number">7 </span><span class="name">Using timers as a regular user</span></a></span></dt><dt><span class="section"><a href="#systemd-timer-troubleshoot"><span class="number">8 </span><span class="name">Troubleshooting</span></a></span></dt><dt><span class="section"><a href="#id-1.10"><span class="number">9 </span><span class="name">Legal Notice</span></a></span></dt><dt><span class="appendix"><a href="#id-1.11"><span class="number">A </span><span class="name">GNU Licenses</span></a></span></dt><dd><dl><dt><span class="sect1"><a href="#id-1.11.3"><span class="number">A.1 </span><span class="name">GNU Free Documentation License</span></a></span></dt></dl></dd></dl></div></div><div class="sect1" id="systemd-timer-concept"><div class="titlepage"><div><div><h2 class="title"><span class="number"> </span><span xmlns:dm="urn:x-suse:ns:docmanager" class="name">The systemd timer concept</span> <a title="Permalink" class="permalink" href="#systemd-timer-concept">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><div><div class="abstract"><p>
-     systemd timer units provide a modern mechanism for scheduling jobs on
-     Linux, replacing cron.
-    </p></div></div></div></div><p>
-   Similar to cron, systemd timer units provide a mechanism for scheduling jobs
-   on Linux. Although systemd timer units serve the same purpose as cron, they
-   offer several advantages.
-  </p><div class="itemizedlist "><ul class="itemizedlist"><li class="listitem "><p>
-     Jobs scheduled using a timer unit can depend on other systemd
-     services. Timer units are treated as regular systemd services, so can be
-     managed with <code class="command">systemctl</code>.
-    </p></li><li class="listitem "><p>
-     Timers can be realtime (being triggered on calendar events) and monotonic
-     being triggered at a specified time elapsed from a certain starting point.
-    </p></li><li class="listitem "><p>
-     Time units are logged to the system journal, which makes it easier to
-     monitor and troubleshoot them.
-    </p></li><li class="listitem "><p>
-     Uses the centralized systemd management services.
-    </p></li><li class="listitem "><p>
-     If the system is off during the expected execution time, the timer is
-     executed once the system is running again.
-    </p></li></ul></div><p>
-   systemd timer units are identified by the <code class="filename">.timer</code> file name extension. Each timer file
-   requires a corresponding service file it controls. In other words, a timer
-   file activates and manages the corresponding service file. For a full
-   refernce on systemd timers including advanced configuration options (like
-   delays or handling clock or time zone changes) refer to <code class="command">man 5
-   systemd.timer</code>.
-  </p></div><div class="sect1" id="systemd-create-timer"><div class="titlepage"><div><div><h2 class="title"><span class="number"> </span><span xmlns:dm="urn:x-suse:ns:docmanager" class="name">Creating a timer</span> <a title="Permalink" class="permalink" href="#systemd-create-timer">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><div><div class="abstract"><p>
-     The following example shows how to set up a timer that triggers the
-     <code class="literal">helloworld.sh</code> shell script after boot time and repeats
-     its execution every 24 hours relative to it's activation time. It also
-     runs Monday to Friday at 10am.
-    </p></div></div></div></div><div class="sect2" id="id-1.3.2"><div class="titlepage"><div><div><h3 class="title"><span class="number">2.1 </span><span xmlns:dm="urn:x-suse:ns:docmanager" class="name">"Hello World" example</span> <a title="Permalink" class="permalink" href="#id-1.3.2">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h3></div></div></div><div class="procedure "><div class="procedure-contents"><ol class="procedure" type="1"><li class="step "><p>
-      Create the file
-      <code class="filename">/etc/systemd/system/helloworld.service</code> with the
-      following content:
-     </p><div class="verbatim-wrap"><pre class="screen">[Unit]
+</script><meta name="edit-url" content="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml"/></head><body class="single normal offline js-off"><div class="bypass-block"><a href="#_content">Jump to content</a></div><header id="_mainnav"><div class="growth-inhibitor"><img src="static/images/logo.svg" alt="Logo" class="logo"/></div></header><div class="crumbs"><div class="growth-inhibitor"><a class="crumb" href="#id-1">Working with systemd timers</a></div></div><main id="_content"><nav class="side-toc placebo" id="_side-toc-overall"> </nav><article class="documentation"><button id="_unfold-side-toc-page">On this page</button><section class="article" id="id-1" data-id-title="Working with systemd timers"><div class="titlepage"><div><div><h1 class="title">Working with <code class="systemitem">systemd</code> timers</h1></div><div><h3 class="subtitle"><em/></h3></div><div class="abstract"><p>
+         From running a backup script at regular intervals to starting a specific process as soon
+         as the machine boots, there are plenty of tasks that require scheduling on a Linux
+         system. cron has long been the go-to tool for all scheduling needs, but the switch to
+         <code class="systemitem">systemd</code> introduced a modern way to schedule tasks: <code class="systemitem">systemd</code> timer units.
+       </p><div class="variablelist"><dl class="variablelist"><dt id="id-1.1.12.2.1"><span class="term">WHAT?</span></dt><dd><p>
+               Learn how to set up, manage and operate systemd timers for scheduling tasks on
+               Linux. Migrate to systemd timers as a modern replacement of cron.
+             </p></dd><dt id="id-1.1.12.2.2"><span class="term">WHY?</span></dt><dd><p>
+               To give you a flexible mechanism for scheduling and managing jobs and services.
+             </p></dd><dt id="id-1.1.12.2.3"><span class="term">EFFORT?</span></dt><dd><p>
+               It takes 10 minutes to create an example <code class="systemitem">systemd</code> timer. You will need
+               up to 30 minutes to fully understand how <code class="systemitem">systemd</code> timers work.
+             </p></dd><dt id="id-1.1.12.2.4"><span class="term">GOAL!</span></dt><dd><p>
+               Learn how to create systemd timers and understand how they work.
+             </p></dd></dl></div><div class="sect3 bridgehead"><h4 class="title" id="id-1.1.12.3"><span class="name">Requirements</span><a title="Permalink" class="permalink" href="#id-1.1.12.3">#</a></h4></div><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>Basic understanding of <code class="systemitem">systemd</code>.</p></li><li class="listitem"><p>
+             <code class="systemitem">root</code> or sudo privileges. If you are planning to use <code class="systemitem">systemd</code> timers as a
+             regular user, refer to <a class="xref" href="#systemd-timer-user" title="8. Using timers as a regular user">Section 8, “Using timers as a regular user”</a> first.
+           </p></li></ul></div></div><div class="date"><span class="imprint-label">Publication Date: </span>28 Feb 2023</div></div></div><section xml:lang="en" class="sect1" id="systemd-timer-concept" data-id-title="The systemd timer concept"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number"> </span><span class="title-name">The <code class="systemitem">systemd</code> timer concept</span></span> <a title="Permalink" class="permalink" href="#systemd-timer-concept">#</a></h2><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div></div><div><div class="abstract"><p>
+        <code class="systemitem">systemd</code> timer units provide a modern mechanism for scheduling jobs on Linux, replacing
+        cron.
+      </p></div></div></div></div><p>
+    Similar to cron, systemd timer units provide a mechanism for scheduling jobs on Linux. Although
+    systemd timer units serve the same purpose as cron, they offer several advantages:
+  </p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>
+        Jobs scheduled using a timer unit can depend on other <code class="systemitem">systemd</code> services. Timer units are
+        treated as regular <code class="systemitem">systemd</code> services, so can be managed with <code class="command">systemctl</code>.
+      </p></li><li class="listitem"><p>
+        Timers can be realtime (being triggered on calendar events) and monotonic being triggered
+        at a specified time elapsed from a certain starting point.
+      </p></li><li class="listitem"><p>
+        Time units are logged to the system journal, which makes it easier to monitor and
+        troubleshoot them.
+      </p></li><li class="listitem"><p>
+        Uses the centralized <code class="systemitem">systemd</code> management services.
+      </p></li><li class="listitem"><p>
+        If the system is off during the expected execution time, the timer is executed once the
+        system is running again.
+      </p></li></ul></div><p>
+    <code class="systemitem">systemd</code> timer units are identified by the <code class="filename">.timer</code> file
+    name extension. Each timer file requires a corresponding service file it controls. In other
+    words, a timer file activates and manages the corresponding service file. For a full refernce
+    on systemd timers including advanced configuration options (like delays or handling clock or
+    time zone changes) refer to <code class="command">man 5 systemd.timer</code>.
+  </p></section><section xml:lang="en" class="sect1" id="systemd-create-timer" data-id-title="Creating a timer"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number"> </span><span class="title-name">Creating a timer</span></span> <a title="Permalink" class="permalink" href="#systemd-create-timer">#</a></h2><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div></div><div><div class="abstract"><p>
+        The following example shows how to set up a timer that triggers the
+        <code class="literal">helloworld.sh</code> shell script after boot time and repeats its execution
+        every 24 hours relative to it's activation time. It also runs Monday to Friday at 10am.
+      </p></div></div></div></div><section class="sect2" id="id-1.3.2" data-id-title="Hello World example"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">2.1 </span><span class="title-name">"Hello World" example</span></span> <a title="Permalink" class="permalink" href="#id-1.3.2">#</a></h3><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div></div></div></div><div class="procedure"><div class="procedure-contents"><ol class="procedure" type="1"><li class="step"><p>
+          Create the file <code class="filename">/etc/systemd/system/helloworld.service</code> with the
+          following content:
+        </p><div class="verbatim-wrap"><pre class="screen">[Unit]
 Description="Hello World script"
 
 [Service]
 ExecStart=/usr/local/bin/helloworld.sh</pre></div><p>
-      This is a $systemd; service file that tells systemd which application to
-      run.
-     </p></li><li class="step "><p>
-      Create the file /etc/systemd/system/helloworld.timer with the following
-      content:
-     </p><div class="verbatim-wrap"><pre class="screen">[Unit]
+          This is a <code class="systemitem">systemd</code> service file that tells systemd which application to run.
+        </p></li><li class="step"><p>
+          Create the file <code class="filename">/etc/systemd/system/helloworld.timer</code> with the
+          following content:
+        </p><div class="verbatim-wrap"><pre class="screen">[Unit]
 Description="Run helloworld.service 5min after boot and every 24 hours relative to activation time"
 
 [Timer]
@@ -95,174 +103,255 @@ Unit=helloworld.service
 
 [Install]
 WantedBy=multi-user.target</pre></div><p>
-      This is the timer file that controls when to activate the respective
-      service file.
-     </p></li><li class="step "><p>
-      Verify that the files you created above contain no errors:
-     </p><div class="verbatim-wrap"><pre class="screen">systemd-analyze verify /etc/systemd/system/helloworld.*</pre></div><p>
-      If the command returns no output, the files have passed the verification
-      successfully.
-     </p></li><li class="step "><p>
-      Start the timer:
-     </p><div class="verbatim-wrap"><pre class="screen">systemctl start helloworld.timer</pre></div><p>
-      This will activate the timer for the current session only.
-     </p></li><li class="step "><p>
-      To ensure the timer is automatically activated each time when booting the
-      machine, you need to enable it:
-     </p><div class="verbatim-wrap"><pre class="screen">systemctl enable helloworld.timer</pre></div></li></ol></div></div><div class="sect3" id="id-1.3.2.3"><div class="titlepage"><div><div><h4 class="title"><span class="number">2.1.1 </span><span xmlns:dm="urn:x-suse:ns:docmanager" class="name">The example explained</span> <a title="Permalink" class="permalink" href="#id-1.3.2.3">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h4></div></div></div><div class="complex-example"><div class="example" id="id-1.3.2.3.2"><div class="example-title-wrap"><h6 class="example-title"><span class="number">Example 1: </span><span class="name">The service file </span><a title="Permalink" class="permalink" href="#id-1.3.2.3.2">#</a></h6></div><div class="example-contents"><div class="verbatim-wrap"><pre class="screen">[Unit]
-Description="Hello World script"<span id="systemd-timer-example-service-descr"></span><span class="callout">1</span>
+          This is the timer file that controls when to activate the respective service file.
+        </p></li><li class="step"><p>
+          Verify that the files you created above contain no errors:
+        </p><div class="verbatim-wrap"><pre class="screen">systemd-analyze verify /etc/systemd/system/helloworld.*</pre></div><p>
+          If the command returns no output, the files have passed the verification successfully.
+        </p></li><li class="step"><p>
+          Start the timer:
+        </p><div class="verbatim-wrap"><pre class="screen">sudo systemctl start helloworld.timer</pre></div><p>
+          This will activate the timer for the current session only.
+        </p></li><li class="step"><p>
+          To ensure the timer is automatically activated each time when booting the machine, you
+          need to enable it:
+        </p><div class="verbatim-wrap"><pre class="screen">sudo systemctl enable helloworld.timer</pre></div></li></ol></div></div></section><section class="sect2" id="id-1.3.3" data-id-title="The example explained"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">2.2 </span><span class="title-name">The example explained</span></span> <a title="Permalink" class="permalink" href="#id-1.3.3">#</a></h3><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div></div></div></div><div class="complex-example"><div class="example" id="id-1.3.3.2" data-id-title="The service file"><div class="title-container"><div class="example-title-wrap"><div class="example-title"><span class="title-number-name"><span class="title-number">Example 1: </span><span class="title-name">The service file </span></span><a title="Permalink" class="permalink" href="#id-1.3.3.2">#</a></div></div><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div><div class="example-contents"><div class="verbatim-wrap"><pre class="screen">[Unit]
+Description="Hello World script"<span class="callout" id="systemd-timer-example-service-descr">1</span>
 
 [Service]
-ExecStart=/usr/local/bin/helloworld.sh<span id="systemd-timer-example-service-exec"></span><span class="callout">2</span></pre></div><div class="calloutlist "><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left"><p><a href="#systemd-timer-example-service-descr"><span class="callout">1</span></a> </p></td><td valign="top" align="left"><p>
-        A brief description explaining the service file's purpose.
-       </p></td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#systemd-timer-example-service-exec"><span class="callout">2</span></a> </p></td><td valign="top" align="left"><p>
-        The application to execute.
-       </p></td></tr></table></div><p>
-      Usually this is all you would need for a service file in this context. In
-      case you require a more complex configuratioon refer to ??? for more
-      information.
-     </p><div id="id-1.3.2.3.2.5" class="admonition note normal"><img class="symbol" alt="Note" title="Note" src="static/images/icon-note.svg" /><h6>Note: Service files for timer do not require an
-      <code class="literal">INSTALL</code> section</h6><p>
-       systemd service files usually contain an <code class="literal">[Install]</code>
-       section determining with which target(s) a service is loaded. This
-       section is not needed in service files for timers, since this
-       information is provided with the timer file.
-      </p></div></div></div></div><div class="example" id="id-1.3.2.3.3"><div class="example-title-wrap"><h6 class="example-title"><span class="number">Example 2: </span><span class="name">The timer file </span><a title="Permalink" class="permalink" href="#id-1.3.2.3.3">#</a></h6></div><div class="example-contents"><div class="verbatim-wrap"><pre class="screen">[Unit]
-Description="Run helloworld.service 5min after boot and every 24 hours relative to activation time""<span id="systemd-timer-example-timer-descr"></span><span class="callout">1</span>
+ExecStart=/usr/local/bin/helloworld.sh<span class="callout" id="systemd-timer-example-service-exec">2</span></pre></div><div class="calloutlist"><table style="border: 0; "><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer-example-service-descr"><span class="callout">1</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+            A brief description explaining the service file's purpose.
+          </p></td></tr><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer-example-service-exec"><span class="callout">2</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+            The application to execute.
+          </p></td></tr></table></div><p>
+        Usually this is all you would need for a service file in this context. In case you require
+        a more complex configuratioon refer to ??? for more information.
+      </p><div id="id-1.3.3.2.5" data-id-title="Service files for timer do not require an INSTALL section" class="admonition note normal"><img class="symbol" alt="Note" title="Note" src="static/images/icon-note.svg"/><div class="admon-title">Note: Service files for timer do not require an <code class="literal">INSTALL</code> section</div><p>
+          <code class="systemitem">systemd</code> service files usually contain an <code class="literal">[Install]</code> section
+          determining with which target(s) a service is loaded. This section is not needed in
+          service files for timers, since this information is provided with the timer file.
+        </p></div></div></div></div><div class="example" id="id-1.3.3.3" data-id-title="The timer file"><div class="title-container"><div class="example-title-wrap"><div class="example-title"><span class="title-number-name"><span class="title-number">Example 2: </span><span class="title-name">The timer file </span></span><a title="Permalink" class="permalink" href="#id-1.3.3.3">#</a></div></div><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div><div class="example-contents"><div class="verbatim-wrap"><pre class="screen">[Unit]
+Description="Run helloworld.service 5min after boot and every 24 hours relative to activation time""<span class="callout" id="systemd-timer-example-timer-descr">1</span>
 
 [Timer]
-OnBootSec=5min<span id="systemd-timer-example-timer-onboot"></span><span class="callout">2</span>
-OnUnitActiveSec=24h<span id="systemd-timer-example-timer-onunit"></span><span class="callout">3</span>
-OnCalendar=Mon..Fri *-*-* 10:00<span id="systemd-timer-example-timer-oncal"></span><span class="callout">4</span>
-Unit=helloworld.service<span id="systemd-timer-example-timer-unit"></span><span class="callout">5</span>
+OnBootSec=5min<span class="callout" id="systemd-timer-example-timer-onboot">2</span>
+OnUnitActiveSec=24h<span class="callout" id="systemd-timer-example-timer-onunit">3</span>
+OnCalendar=Mon..Fri *-*-* 10:00<span class="callout" id="systemd-timer-example-timer-oncal">4</span>
+Unit=helloworld.service<span class="callout" id="systemd-timer-example-timer-unit">5</span>
 
 [Install]
-WantedBy=multi-user.target<span id="systemd-timer-example-timer-wanted"></span><span class="callout">6</span></pre></div><div class="calloutlist "><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left"><p><a href="#systemd-timer-example-timer-descr"><span class="callout">1</span></a> </p></td><td valign="top" align="left"><p>
-        A brief description explaining the timer file's purpose.
-       </p></td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#systemd-timer-example-timer-onboot"><span class="callout">2</span></a> </p></td><td valign="top" align="left"><p>
-        Specifies a timer that triggers the service five minutes after the
-        system boot.
-       </p></td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#systemd-timer-example-timer-onunit"><span class="callout">3</span></a> </p></td><td valign="top" align="left"><p>
-        Specifies a timer that triggers the service 24 hours after the
-        service has been activated (that is, the timer will trigger the service
-        once a day).
-       </p></td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#systemd-timer-example-timer-oncal"><span class="callout">4</span></a> </p></td><td valign="top" align="left"><p>
-        Specifies a timer that triggers the service at fixed points in time
-        (here: Monday to Friday at 10 am).
-       </p></td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#systemd-timer-example-timer-unit"><span class="callout">5</span></a> </p></td><td valign="top" align="left"><p>
-        The service file that is to be executed.
-       </p></td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#systemd-timer-example-timer-wanted"><span class="callout">6</span></a> </p></td><td valign="top" align="left"><p>
-        The system target in which the timer get activated. For more
-        information on systemd targets refer to ???.
-       </p></td></tr></table></div></div></div><div id="id-1.3.2.3.4" class="admonition tip normal"><img class="symbol" alt="Tip" title="Tip" src="static/images/icon-tip.svg" /><h6>Tip: Migrating from cron</h6><p>
-      The equivalent of the helloworld example above in cron would be the
-      following lines:
-     </p><div class="verbatim-wrap"><pre class="screen">@reboot sleep 300 &amp;&amp; /usr/local/bin/helloworld.sh
+WantedBy=multi-user.target<span class="callout" id="systemd-timer-example-timer-wanted">6</span></pre></div><div class="calloutlist"><table style="border: 0; "><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer-example-timer-descr"><span class="callout">1</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+            A brief description explaining the timer file's purpose.
+          </p></td></tr><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer-example-timer-onboot"><span class="callout">2</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+            Specifies a timer that triggers the service five minutes after the system boot.
+          </p></td></tr><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer-example-timer-onunit"><span class="callout">3</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+            Specifies a timer that triggers the service 24 hours after the service has been
+            activated (that is, the timer will trigger the service once a day).
+          </p></td></tr><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer-example-timer-oncal"><span class="callout">4</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+            Specifies a timer that triggers the service at fixed points in time (here: Monday to
+            Friday at 10 am).
+          </p></td></tr><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer-example-timer-unit"><span class="callout">5</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+            The service file that is to be executed.
+          </p></td></tr><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer-example-timer-wanted"><span class="callout">6</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+            The system target in which the timer get activated. For more information on systemd
+            targets refer to ???.
+          </p></td></tr></table></div></div></div><div id="id-1.3.3.4" data-id-title="Migrating from cron" class="admonition tip normal"><img class="symbol" alt="Tip" title="Tip" src="static/images/icon-tip.svg"/><div class="admon-title">Tip: Migrating from cron</div><p>
+        The equivalent of the helloworld example above in cron would be the following lines:
+      </p><div class="verbatim-wrap"><pre class="screen">@reboot sleep 300 &amp;&amp; /usr/local/bin/helloworld.sh
 0 10 * * * 1-5 /usr/local/bin/helloworld.sh</pre></div><p>
-      Note that there is now equivalent for <code class="literal">OnUnitActiveSec</code>
-      in cron.
-     </p></div></div></div></div><div class="sect1" id="systemd-timer-types"><div class="titlepage"><div><div><h2 class="title"><span class="number"> </span><span xmlns:dm="urn:x-suse:ns:docmanager" class="name">Timer types</span> <a title="Permalink" class="permalink" href="#systemd-timer-types">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><div><div class="abstract"><p>
-     systemd supports two types of timers: realtime (based on calendar) and
-     monotonic (based on events)
-    </p></div></div></div></div><div class="variablelist "><dl class="variablelist"><dt id="id-1.4.2.1"><span class="term ">Realtime timer</span></dt><dd><p>
-      Similar to cronjobs, realtime timers are triggered on calendar
-      events. Realtime timers are defined using the option
-      <code class="literal">OnCalendar</code>..
-     </p><p>
-      Using a syntax similar to cron, you can specify when to trigger an event
-      based on date and time. the following general syntax applies:
-     </p><div class="verbatim-wrap"><pre class="screen">OnCalendar=DayOfWeek Year-Month-Day Hour:Minute:Second</pre></div><p>
-      <code class="literal">DayOfWeek</code> is optional, each value in
-      <code class="literal">Year-Month-Day</code> can be replaced by the wildcard
-      <code class="literal">*</code> to match every occurence. Continuous ranges can be
-      specified using <code class="literal">..</code>, a list of separated values needs
-      to be delimited by <code class="literal">,</code>.
-     </p><div class="itemizedlist "><ul class="itemizedlist"><li class="listitem "><p>
-        6pm on every Friday: <code class="literal">OnCalendar=Fri *-*-* 18:00:00</code>
-       </p></li><li class="listitem "><p>
-        5am every day: <code class="literal">OnCalendar=Mon..Sun *-*-* 5:00:00</code>
-       </p></li><li class="listitem "><p>
-        1am and 3am on Sundays and Tuesdays: <code class="literal">OnCalendar=Tue,Sun *-*-* 01,03:00:00</code>
-       </p></li><li class="listitem "><p>
-        Single date: <code class="literal">OnCalendar=Mo..Sun 2023-09-23 00:00:01</code>
-       </p></li></ul></div><p>
-      To specify triggers at different times, you may create more than one
-      OnCalendar entries in  a single timer file:
-     </p><div class="itemizedlist "><ul class="itemizedlist"><li class="listitem "><p>10am on week days and at 10pm on weekends:</p><div class="verbatim-wrap"><pre class="screen">OnCalendar=Mon..Fri *-*-* 10:00
+        Note that there is now equivalent for <code class="literal">OnUnitActiveSec</code> in cron.
+      </p></div></section></section><section xml:lang="en" class="sect1" id="systemd-timer-manage" data-id-title="Managing timers"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number"> </span><span class="title-name">Managing timers</span></span> <a title="Permalink" class="permalink" href="#systemd-timer-manage">#</a></h2><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div></div><div><div class="abstract"><p>
+        Timers can be managed with general <code class="systemitem">systemd</code> commands using the
+        <code class="command">systemctl</code> command. In addition to that, <code class="command">systemctl
+        list-timers</code> shows you all timers available on a host.
+      </p></div></div></div></div><div class="variablelist"><dl class="variablelist"><dt id="id-1.4.2.1"><span class="term">Starting and stopping timers</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root"># </code>systemctl start <em class="replaceable">TIMER</em>.timer
+<code class="prompt root"># </code>systemctl restart <em class="replaceable">TIMER</em>.timer
+<code class="prompt root"># </code>systemctl stop <em class="replaceable">TIMER</em>.timer</pre></div></dd><dt id="id-1.4.2.2"><span class="term">Enabling and disabling timers</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root"># </code>systemctl enable <em class="replaceable">TIMER</em>.timer
+<code class="prompt root"># </code>systemctl disable <em class="replaceable">TIMER</em>.timer</pre></div></dd><dt id="id-1.4.2.3"><span class="term">Showing the timer file contents</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root"># </code>systemctl cat <em class="replaceable">TIMER</em>.timer</pre></div></dd><dt id="id-1.4.2.4"><span class="term">Checking on a specific timer</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root"># </code>systemctl status helloworld.timer
+● helloworld.timer - "Run helloworld.service 5min after boot and every 24 hours
+relative to activation time"<span class="callout" id="systemd-timer.status.1">1</span>
+Loaded: loaded (/etc/systemd/system/helloworld.timer; disabled; vendor preset: disabled)<span class="callout" id="systemd-timer.status.2">2</span>
+Active: active (waiting) since Tue 2022-10-26 18:35:41 CEST; 6s ago<span class="callout" id="systemd-timer.status.3">3</span>
+Trigger: Wed 2022-10-27 18:35:41 CEST; 23h left<span class="callout" id="systemd-timer.status.4">4</span>
+Triggers: ● helloworld.service<span class="callout" id="systemd-timer.status.5">5</span>
+<span class="callout" id="systemd-timer.status.6">6</span>
+Oct 26 18:35:41 neo systemd[1]: Started "Run helloworld.service 5min after boot and every 24 hours relative to activation time".<span class="callout" id="systemd-timer.status.7">7</span></pre></div><div class="calloutlist"><table style="border: 0; "><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer.status.1"><span class="callout">1</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+              The timer's file name and it's description.
+            </p></td></tr><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer.status.2"><span class="callout">2</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+              Lists whether a timer has been successfully parsed and is kept in memory (loaded),
+              shows the full path to the timer file, Last it shows wether the timer is being
+              started at boot time (enabled) or not (disabled). The first value shows the current
+              system configuration, the second value the vendor preset.
+            </p></td></tr><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer.status.3"><span class="callout">3</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+              Indicates whether the timer is active (waiting to trigger events) or inactive. If
+              active, it also shows the time that has passed since the last activation (6 seconds
+              in this example).
+            </p></td></tr><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer.status.4"><span class="callout">4</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+              Date and time the timer will be triggered next.
+            </p></td></tr><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer.status.5"><span class="callout">5</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+              Name of the service file the timer will trigger.
+            </p></td></tr><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer.status.6"><span class="callout">6</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+              Optional line pointing to documenattion (for example man pages). If not available
+              shows an empty line (as in this example).
+            </p></td></tr><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer.status.7"><span class="callout">7</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+              Latest journal entry created by the timer.
+            </p></td></tr></table></div></dd></dl></div><p>
+    To list all timers available on the system, use <code class="command">systemctl list-timers</code>. The
+    following options are available:
+  </p><div class="variablelist"><dl class="variablelist"><dt id="id-1.4.4.1"><span class="term">List all active timers:</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root"># </code>systemctl list-timers</pre></div></dd><dt id="id-1.4.4.2"><span class="term">List all timers including inactive ones:</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root"># </code>systemctl list-timers --all</pre></div></dd><dt id="id-1.4.4.3"><span class="term">List all timers matching a pattern:</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root"># </code>systemctl list-timers hello*
+<code class="prompt root"># </code>systemctl list-timers --all hello*</pre></div><p>
+          The pattern can be a name or a shell globbing expression as above. The operators
+          <code class="literal">*</code>, <code class="literal">?</code>, and <code class="literal">[]</code> may be used.
+        </p></dd><dt id="id-1.4.4.4"><span class="term">List timers matching a certain state:</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root"># </code>systemctl list-timers --state=failed</pre></div><p>
+          <code class="option">--state=</code> takes the following values:
+          <code class="literal">active</code>, <code class="literal">failed</code>,
+          <code class="literal">load</code>, <code class="literal">sub</code>, see <code class="command">man
+          systemctl</code> for details.
+        </p></dd></dl></div><div class="complex-example"><div class="example" id="id-1.4.5" data-id-title="Listing timers"><div class="title-container"><div class="example-title-wrap"><div class="example-title"><span class="title-number-name"><span class="title-number">Example 3: </span><span class="title-name">Listing timers </span></span><a title="Permalink" class="permalink" href="#id-1.4.5">#</a></div></div><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div><div class="example-contents"><p>
+      Running <code class="command">systemctl list-timers</code> will result in a table similar to this
+      example.
+    </p><div class="verbatim-wrap"><pre class="screen"><code class="prompt root"># </code>systemctl list-timers snapp*
+NEXT                         LEFT       LAST                         PASSED    UNIT                   ACTIVATES
+
+-----------------------------------------------------------------------------------------------------------------------------
+Tue 2022-10-26 19:00:00 CEST 39min left Tue 2022-10-26 18:00:29 CEST 19min ago snapper-timeline.timer snapper-timeline.service
+Wed 2022-10-27 08:33:04 CEST 14h   left Tue 2022-10-26 08:33:04 CEST 9h ago    snapper-cleanup.timer  snapper-cleanup.service</pre></div><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>
+          <code class="literal">NEXT</code> shows the next time the timer will run.
+        </p></li><li class="listitem"><p>
+          <code class="literal">LEFT</code> shows how long till the next time the timer runs.
+        </p></li><li class="listitem"><p>
+          <code class="literal">LAST</code> shows the last time the timer ran.
+        </p></li><li class="listitem"><p>
+          <code class="literal">PASSED</code> shows how long has passed since the timer last ran.
+        </p></li><li class="listitem"><p>
+          <code class="literal">UNIT</code> shows the name of the timer.
+        </p></li><li class="listitem"><p>
+          <code class="literal">ACTIVATES</code> shows the name the service the timer activates when it runs.
+        </p></li></ul></div></div></div></div></section><section xml:lang="en" class="sect1" id="systemd-timer-types" data-id-title="Timer types"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number"> </span><span class="title-name">Timer types</span></span> <a title="Permalink" class="permalink" href="#systemd-timer-types">#</a></h2><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div></div><div><div class="abstract"><p>
+        <code class="systemitem">systemd</code> supports two types of timers: realtime (based on calendar) and monotonic (based
+        on events). Although timers are usually persistent, systemd also allows to set up transient
+        timers, that are only valid for the current session.
+      </p></div></div></div></div><div class="variablelist"><dl class="variablelist"><dt id="id-1.5.2.1"><span class="term">Realtime timer</span></dt><dd><p>
+          Similar to cronjobs, realtime timers are triggered on calendar events. Realtime timers
+          are defined using the option <code class="literal">OnCalendar</code>..
+        </p><p>
+          Using a syntax similar to cron, you can specify when to trigger an event based on date
+          and time. the following general syntax applies:
+        </p><div class="verbatim-wrap"><pre class="screen">OnCalendar=DayOfWeek Year-Month-Day Hour:Minute:Second</pre></div><p>
+          <code class="literal">DayOfWeek</code> is optional, each value in
+          <code class="literal">Year-Month-Day</code> can be replaced by the wildcard
+          <code class="literal">*</code> to match every occurence. Continuous ranges can be
+          specified using <code class="literal">..</code>, a list of separated values needs
+          to be delimited by <code class="literal">,</code>.
+        </p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>
+              6pm on every Friday: <code class="literal">OnCalendar=Fri *-*-* 18:00:00</code>
+            </p></li><li class="listitem"><p>
+              5am every day: <code class="literal">OnCalendar=Mon..Sun *-*-* 5:00:00</code>
+            </p></li><li class="listitem"><p>
+              1am and 3am on Sundays and Tuesdays: <code class="literal">OnCalendar=Tue,Sun *-*-* 01,03:00:00</code>
+            </p></li><li class="listitem"><p>
+              Single date: <code class="literal">OnCalendar=Mo..Sun 2023-09-23 00:00:01</code>
+            </p></li></ul></div><p>
+          To specify triggers at different times, you may create more than one OnCalendar entries
+          in a single timer file:
+        </p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>10am on week days and at 10pm on weekends:</p><div class="verbatim-wrap"><pre class="screen">OnCalendar=Mon..Fri *-*-* 10:00
 OnCalendar=Sat,Sun *-*-* 22:00</pre></div></li></ul></div><p>
-      The syntax is very flexible and offers many more advanced features. Refer
-      to <code class="command">man 7 systemd.time</code> to, among others, learn how to:
-     </p><div class="itemizedlist "><ul class="itemizedlist"><li class="listitem "><p>
-        shorten the syntax and use abbreviations..
-       </p></li><li class="listitem "><p>
-        specify repetitions.
-       </p></li><li class="listitem "><p>
-        find specific days in a month (last day of month, last Sunday,...).
-       </p></li><li class="listitem "><p>
-        apply time zones.
-       </p></li></ul></div></dd><dt id="id-1.4.2.2"><span class="term ">Monotonic timers</span></dt><dd><p>
-      Monotonic timers are triggered at a specified time elapsed from a certain
-      event. The latter could be a system boot or system unit activation
-      event. There are several options for defining monotonic timers:
-     </p><div class="itemizedlist "><ul class="itemizedlist"><li class="listitem "><p>
-        <code class="literal">OnActiveSec</code>: time after unit activation
-        </p><div class="verbatim-wrap"><pre class="screen">OnActiveSec=50minutes</pre></div></li><li class="listitem "><p>
-        <code class="literal">OnBootSec</code>: time after system boot.
-       </p><div class="verbatim-wrap"><pre class="screen">OnBootSec=10hours</pre></div></li><li class="listitem "><p>
-        <code class="literal">OnStartupSec</code>: timer after service manager is
-        started. For systemservices this is almost equal to
-        <code class="literal">OnActiveSec</code>. Use this for user services, where the
-        service manager is started at user login.
-       </p><div class="verbatim-wrap"><pre class="screen">OnStartupSec=5minutes 20seconds</pre></div></li><li class="listitem "><p>
-        <code class="literal">OnUnitActiveSec</code>: time after the corresponding
-        service was last activated
-       </p><div class="verbatim-wrap"><pre class="screen">OnUnitActiveSec=10seconds</pre></div></li><li class="listitem "><p>
-        <code class="literal">OnUnitInactiveSec</code>: time after the corresponding
-        service was last deactivated
-       </p><div class="verbatim-wrap"><pre class="screen">OnUnitInactiveSec=2hours 15minutes 18 seconds</pre></div></li></ul></div><p>
-      Values are to be defined as a time. Minutes, hours, days, month, years
-      etc. may be used . If no unit is specified, seconds are assumed. The
-      following units can be used:
-     </p><div class="itemizedlist "><ul class="itemizedlist"><li class="listitem "><p>
-        usec
-       </p></li><li class="listitem "><p>
-        msec
-       </p></li><li class="listitem "><p>
-        seconds
-       </p></li><li class="listitem "><p>
-        minutes
-       </p></li><li class="listitem "><p>
-        hours
-       </p></li><li class="listitem "><p>
-        days
-       </p></li><li class="listitem "><p>
-        weeks
-       </p></li><li class="listitem "><p>
-        months
-       </p></li><li class="listitem "><p>
-        years
-       </p></li></ul></div></dd></dl></div></div><div class="sect1" id="systemd-timer-test"><div class="titlepage"><div><div><h2 class="title"><span class="number"> </span><span xmlns:dm="urn:x-suse:ns:docmanager" class="name">Testing calendar entries</span> <a title="Permalink" class="permalink" href="#systemd-timer-test">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><div><div class="abstract"><p>
-     systemd provides a tool for testing and creating calendar timer entries
-     for realtime timers
-    </p></div></div></div></div><p>
-   When it comes to creating complex date entries for realtime timers,
-   systemd provides you with a tool that will help you with this task:
-   <code class="command">systemd-analyze calendar</code>. It accepts the same argument
-   than the <code class="literal">OnCalendar</code> entry required to set up realtime
-   timers.
+          The syntax is very flexible and offers many more advanced features. Refer to <code class="command">man
+          7 systemd.time</code> to, among others, learn how to:
+        </p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>
+              shorten the syntax and use abbreviations..
+            </p></li><li class="listitem"><p>
+              specify repetitions.
+            </p></li><li class="listitem"><p>
+              find specific days in a month (last day of month, last Sunday,...).
+            </p></li><li class="listitem"><p>
+              apply time zones.
+            </p></li></ul></div></dd><dt id="id-1.5.2.2"><span class="term">Monotonic timers</span></dt><dd><p>
+          Monotonic timers are triggered at a specified time elapsed from a certain event. The
+          latter could be a system boot or system unit activation event. There are several options
+          for defining monotonic timers:
+        </p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>
+              <code class="literal">OnActiveSec</code>: time after unit activation
+            </p><div class="verbatim-wrap"><pre class="screen">OnActiveSec=50minutes</pre></div></li><li class="listitem"><p>
+              <code class="literal">OnBootSec</code>: time after system boot.
+            </p><div class="verbatim-wrap"><pre class="screen">OnBootSec=10hours</pre></div></li><li class="listitem"><p>
+              <code class="literal">OnStartupSec</code>: timer after service manager is started. For
+              systemservices this is almost equal to <code class="literal">OnActiveSec</code>. Use this for
+              user services, where the service manager is started at user login.
+            </p><div class="verbatim-wrap"><pre class="screen">OnStartupSec=5minutes 20seconds</pre></div></li><li class="listitem"><p>
+              <code class="literal">OnUnitActiveSec</code>: time after the corresponding service was last
+              activated
+            </p><div class="verbatim-wrap"><pre class="screen">OnUnitActiveSec=10seconds</pre></div></li><li class="listitem"><p>
+              <code class="literal">OnUnitInactiveSec</code>: time after the corresponding service was last
+              deactivated
+            </p><div class="verbatim-wrap"><pre class="screen">OnUnitInactiveSec=2hours 15minutes 18 seconds</pre></div></li></ul></div><p>
+          Values are to be defined as a time. Minutes, hours, days, month, years etc. may be
+          used. If no unit is specified, seconds are assumed. The following units can be used:
+        </p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>
+              usec
+            </p></li><li class="listitem"><p>
+              msec
+            </p></li><li class="listitem"><p>
+              seconds
+            </p></li><li class="listitem"><p>
+              minutes
+            </p></li><li class="listitem"><p>
+              hours
+            </p></li><li class="listitem"><p>
+              days
+            </p></li><li class="listitem"><p>
+              weeks
+            </p></li><li class="listitem"><p>
+              months
+            </p></li><li class="listitem"><p>
+              years
+            </p></li></ul></div></dd><dt id="id-1.5.2.3"><span class="term">Transient timers</span></dt><dd><p>
+          Transient timers are temporary timers only valid for the current session. Using these
+          timers you can either use an existing service file or directly start a program. Transient
+          timers are invoked by running <code class="command">systemd-run</code>.
+        </p><p>
+          The following example runs the <code class="filename">helloworld.service</code> unit every two
+          hours:
+        </p><div class="verbatim-wrap"><pre class="screen">systemd-run --on-active="2hours" --unit="helloworld.service"</pre></div><p>
+          To run a command directly use the following syntax. In this example the script
+          <code class="filename">/usr/local/bin/helloworld.sh</code> is called directly:
+        </p><div class="verbatim-wrap"><pre class="screen">systemd-run --on-active="2hours" /usr/local/bin/helloworld.sh</pre></div><p>
+          In case the command takes parameters, add them space-separated:
+        </p><div class="verbatim-wrap"><pre class="screen">systemd-run --on-active="2hours" /usr/local/bin/helloworld.sh --language=pt_BR"</pre></div><p>
+          Transient timers can be of types monotonic or real time. The following switches, working
+          as described above, are supported:
+        </p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>
+              <code class="option">--on-active</code>
+            </p></li><li class="listitem"><p>
+              <code class="option">--on-startup</code>
+            </p></li><li class="listitem"><p>
+              <code class="option">--on-unit-active</code>
+            </p></li><li class="listitem"><p>
+              <code class="option">--on-unit-inactive</code>
+            </p></li><li class="listitem"><p>
+              <code class="option">--on-calendar</code>
+            </p></li></ul></div><p>
+          For more information refer to <code class="command">man 1 systemd-run</code>.
+        </p></dd></dl></div></section><section xml:lang="en" class="sect1" id="systemd-timer-test" data-id-title="Testing calendar entries"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number"> </span><span class="title-name">Testing calendar entries</span></span> <a title="Permalink" class="permalink" href="#systemd-timer-test">#</a></h2><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div></div><div><div class="abstract"><p>
+        <code class="systemitem">systemd</code> provides a tool for testing and creating calendar timer entries for realtime
+        timers
+      </p></div></div></div></div><p>
+    When it comes to creating complex date entries for realtime timers, <code class="systemitem">systemd</code> provides you with
+    a tool that will help you with this task: <code class="command">systemd-analyze calendar</code>. It
+    accepts the same argument than the <code class="literal">OnCalendar</code> entry required to set up
+    realtime timers.
   </p><p>
-   Here are some examples. You can concatenate several arguments separated by
-   space. If the term to test is correct, the output will show you when the
-   timer is triggered next (in loca tuime and UTC). It will also show the
-   string in <code class="literal">Normalized form</code>, it is recommended to use that
-   string in the timer file.
-  </p><div class="verbatim-wrap"><pre class="screen"><code class="prompt root">root # </code>systemd-analyze calendar "Tue,Sun *-*-* 01,03:00:00"
+    Here are some examples. You can concatenate several arguments separated by space. If the term
+    to test is correct, the output will show you when the timer is triggered next (in loca tuime
+    and UTC). It will also show the string in <code class="literal">Normalized form</code>, it is recommended
+    to use that string in the timer file.
+  </p><div class="verbatim-wrap"><pre class="screen"><code class="prompt user">&gt; </code><code class="command">sudo</code> systemd-analyze calendar "Tue,Sun *-*-* 01,03:00:00"
 Normalized form: Tue,Sun *-*-* 01,03:00:00
 Next elapse: Sun 2021-10-31 01:00:00 CEST
 (in UTC): Sat 2021-10-30 23:00:00 UTC
 From now: 3 days left
 
-<code class="prompt root">root # </code>systemd-analyze calendar "Mon..Fri *-*-* 10:00" "Sat,Sun *-*-* 22:00"
+<code class="prompt user">&gt; </code><code class="command">sudo</code> systemd-analyze calendar "Mon..Fri *-*-* 10:00" "Sat,Sun *-*-* 22:00"
 Original form: Mon..Fri *-*-* 10:00
 Normalized form: Mon..Fri *-*-* 10:00:00
 Next elapse: Thu 2021-10-28 10:00:00 CEST
@@ -274,13 +363,12 @@ Normalized form: Sat,Sun *-*-* 22:00:00
 Next elapse: Sat 2021-10-30 22:00:00 CEST
 (in UTC): Sat 2021-10-30 20:00:00 UTC
 From now: 3 days left</pre></div><p>
-   If you have reoccuring timers, you can use the <code class="option">–iterations
-   <em class="replaceable ">N</em></code> switch to list trigger times and test
-   whether they met your expectations. The argument
-   <em class="replaceable ">N</em> specifies the number of iterations you would
-   like to test. The following example string triggers every 8 hours (starting
-   at 00:00:00) on Sundays:
-  </p><div class="verbatim-wrap"><pre class="screen"><code class="prompt root">root # </code>systemd-analyze calendar --iterations 5 "Sun *-*-* 0/08:00:00"
+    If you have reoccuring timers, you can use the <code class="option">–iterations
+    <em class="replaceable">N</em></code> switch to list trigger times and test whether they met
+    your expectations. The argument <em class="replaceable">N</em> specifies the number of iterations
+    you would like to test. The following example string triggers every 8 hours (starting at
+    00:00:00) on Sundays:
+  </p><div class="verbatim-wrap"><pre class="screen"><code class="prompt user">&gt; </code><code class="command">sudo</code> systemd-analyze calendar --iterations 5 "Sun *-*-* 0/08:00:00"
 Original form: Sun *-*-* 0/08:00:00
 Normalized form: Sun *-*-* 00/8:00:00
 Next elapse: Sun 2021-10-31 00:00:00 CEST
@@ -297,276 +385,348 @@ Iter. #4: Sun 2021-11-07 00:00:00 CET
 From now: 1 week 3 days left
 Iter. #5: Sun 2021-11-07 08:00:00 CET
 (in UTC): Sun 2021-11-07 07:00:00 UTC
-From now: 1 week 3 days left</pre></div></div><div class="sect1" id="systemd-timer-catchup"><div class="titlepage"><div><div><h2 class="title"><span class="number"> </span><span xmlns:dm="urn:x-suse:ns:docmanager" class="name">Catching up on missed runs</span> <a title="Permalink" class="permalink" href="#systemd-timer-catchup">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><div><div class="abstract"><p>
-    With systemd timers you can make leeway for missed timer events.
-   </p></div></div></div></div><p>
-   If a systemd timer was inactive or the system was off during the expected
-   execution time, missed events can optionally be triggered immediately when
-   the timer is activated again. To enable this, add the configuration option
-   <code class="literal">Persisten=true</code> to the Timer section:
- </p><div class="verbatim-wrap"><pre class="screen">[Timer]
+From now: 1 week 3 days left</pre></div></section><section xml:lang="en" class="sect1" id="systemd-timer-catchup" data-id-title="Catching up on missed runs"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number"> </span><span class="title-name">Catching up on missed runs</span></span> <a title="Permalink" class="permalink" href="#systemd-timer-catchup">#</a></h2><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div></div><div><div class="abstract"><p>
+        With systemd timers you can make leeway for missed timer events.
+      </p></div></div></div></div><p>
+    If a <code class="systemitem">systemd</code> timer was inactive or the system was off during the expected execution time,
+    missed events can optionally be triggered immediately when the timer is activated again. To
+    enable this, add the configuration option <code class="literal">Persisten=true</code> to the Timer
+    section:
+  </p><div class="verbatim-wrap"><pre class="screen">[Timer]
 OnCalendar=Mon..Fri 10:00
 Persistent=true
-Unit=helloworld.service</pre></div></div><div class="sect1" id="systemd-timer-manage"><div class="titlepage"><div><div><h2 class="title"><span class="number"> </span><span xmlns:dm="urn:x-suse:ns:docmanager" class="name">Testing calendar entries</span> <a title="Permalink" class="permalink" href="#systemd-timer-manage">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><div><div class="abstract"><p>
-    Timers can be managed with general systemd commands using the
-    <code class="command">systemctl</code>. In addition to that, <code class="command">systemctl
-    list-timers</code> shows you all timers available on a host.
-   </p></div></div></div></div><div class="variablelist "><dl class="variablelist"><dt id="id-1.7.2.1"><span class="term ">Starting and stopping timers</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root">root # </code>systemctl start <em class="replaceable ">TIMER</em>.timer
-<code class="prompt root">root # </code>systemctl restart <em class="replaceable ">TIMER</em>.timer
-<code class="prompt root">root # </code>systemctl stop <em class="replaceable ">TIMER</em>.timer</pre></div></dd><dt id="id-1.7.2.2"><span class="term ">Enabling and disabling timers</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root">root # </code>systemctl enable <em class="replaceable ">TIMER</em>.timer
-<code class="prompt root">root # </code>systemctl disable <em class="replaceable ">TIMER</em>.timer</pre></div></dd><dt id="id-1.7.2.3"><span class="term ">Showing the timer file contents</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root">root # </code>systemctl cat <em class="replaceable ">TIMER</em>.timer</pre></div></dd><dt id="id-1.7.2.4"><span class="term ">Checking on a specific timer</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root">root # </code>systemctl status helloworld.timer
-● helloworld.timer - "Run helloworld.service 5min after boot and every 24 hours
-relative to activation time"<span id="systemd-timer.status.1"></span><span class="callout">1</span>
-Loaded: loaded (/etc/systemd/system/helloworld.timer; disabled; vendor preset: disabled)<span id="systemd-timer.status.2"></span><span class="callout">2</span>
-Active: active (waiting) since Tue 2021-10-26 18:35:41 CEST; 6s ago<span id="systemd-timer.status.3"></span><span class="callout">3</span>
-Trigger: Wed 2021-10-27 18:35:41 CEST; 23h left<span id="systemd-timer.status.4"></span><span class="callout">4</span>
-Triggers: ● helloworld.service<span id="systemd-timer.status.5"></span><span class="callout">5</span>
-<span id="systemd-timer.status.6"></span><span class="callout">6</span>
-Oct 26 18:35:41 neo systemd[1]: Started "Run helloworld.service 5min after boot and every 24 hours relative to activation time".<span id="systemd-timer.status.7"></span><span class="callout">7</span></pre></div><div class="calloutlist "><table border="0" summary="Callout list"><tr><td width="5%" valign="top" align="left"><p><a href="#systemd-timer.status.1"><span class="callout">1</span></a> </p></td><td valign="top" align="left"><p>
-       The timer's file name and it's description.
-      </p></td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#systemd-timer.status.2"><span class="callout">2</span></a> </p></td><td valign="top" align="left"><p>
-       Lists whether a timer has been successfully parsed and is kept in memory
-       (loaded), shows the full path to the timer file, Last it shows wether the
-       timer is being started at boot time (enabled) or not (disabled). The
-       first value shows the current system configuration, the second value the
-       vendor preset.
-      </p></td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#systemd-timer.status.3"><span class="callout">3</span></a> </p></td><td valign="top" align="left"><p>
-       Indicates whether the timer is active (waiting to trigger events) or
-       inactive. If active, it also shows the time that has passed since the
-       last activation (6 seconds in this example).
-      </p></td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#systemd-timer.status.4"><span class="callout">4</span></a> </p></td><td valign="top" align="left"><p>
-       Date and time the timer will be triggered next.
-      </p></td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#systemd-timer.status.5"><span class="callout">5</span></a> </p></td><td valign="top" align="left"><p>
-       Name of the service file the timer will trigger.
-      </p></td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#systemd-timer.status.6"><span class="callout">6</span></a> </p></td><td valign="top" align="left"><p>
-       Optional line pointing to documenattion (for example man pages). If not
-       available shows an empty line (as in this example).
-      </p></td></tr><tr><td width="5%" valign="top" align="left"><p><a href="#systemd-timer.status.7"><span class="callout">7</span></a> </p></td><td valign="top" align="left"><p>
-       Latest journal entry created by the timer.
-      </p></td></tr></table></div></dd></dl></div><p>
-  To list all timers available on the system, use <code class="command">systemctl
-  list-timers</code>. The following options are available:
- </p><div class="variablelist "><dl class="variablelist"><dt id="id-1.7.4.1"><span class="term ">List all active timers:</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root">root # </code>systemctl list-timers</pre></div></dd><dt id="id-1.7.4.2"><span class="term ">List all timers including inactive ones:</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root">root # </code>systemctl list-timers --all</pre></div></dd><dt id="id-1.7.4.3"><span class="term ">List all timers matching a pattern:</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root">root # </code>systemctl list-timers hello*
-<code class="prompt root">root # </code>systemctl list-timers --all hello*</pre></div><p>
-    Tthe pattern can be a name or a shell globbing expression as above. The
-    operators <code class="literal">*</code>, <code class="literal">?</code>, and
-    <code class="literal">[]</code> may be used.
-    </p></dd><dt id="id-1.7.4.4"><span class="term ">List timers matching a certain state:</span></dt><dd><div class="verbatim-wrap"><pre class="screen"><code class="prompt root">root # </code>systemctl list-timers --state=failed</pre></div><p>
-     <code class="option">--state=</code> takes the following values:
-     <code class="literal">active</code>, <code class="literal">failed</code>,
-     <code class="literal">load</code>, <code class="literal">sub</code>, see <code class="command">man
-     systemctl</code> for details.
-    </p></dd></dl></div><div class="complex-example"><div class="example" id="id-1.7.5"><div class="example-title-wrap"><h6 class="example-title"><span class="number">Example 3: </span><span class="name">Listing timers </span><a title="Permalink" class="permalink" href="#id-1.7.5">#</a></h6></div><div class="example-contents"><p>
-   Running <code class="command">systemctl list-timers</code> will result in a table
-   similar to this example.
-  </p><div class="verbatim-wrap"><pre class="screen"><code class="prompt root">root # </code>systemctl list-timers snapp*
-NEXT                         LEFT       LAST                         PASSED    UNIT                   ACTIVATES
+Unit=helloworld.service</pre></div></section><section xml:lang="en" class="sect1" id="systemd-timer-mailto" data-id-title="Getting notified by email if a timer fails"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number"> </span><span class="title-name">Getting notified by email if a timer fails</span></span> <a title="Permalink" class="permalink" href="#systemd-timer-mailto">#</a></h2><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div></div><div><div class="abstract"><p>
+        Cron comes with the MAILTO feature, where you only have to specify an email address with
+        MAILTO to get an email notification with the output of the respective script(s). systemd
+        does not offer such functionality out of the box. The following procedure describes a
+        workaround to get email notifications when a timer fails.
+      </p></div></div></div></div><p>
+    You need to
+  </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>
+        create a script that sends an e-mail.
+      </p></li><li class="listitem"><p>
+        create systemd service file running the email script.
+      </p></li><li class="listitem"><p>
+        test the service file.
+      </p></li><li class="listitem"><p>
+        call this service file via <code class="literal">OnFailure</code> within the service that is run by
+        the timer.
+      </p></li></ol></div><div class="procedure"><div class="procedure-contents"><ol class="procedure" type="1"><li class="step"><p>
+        Create the script <code class="filename">/usr/local/bin/send_systemd_email</code>.
+        In the following example we are using the <code class="command">mailx</code> command from package
+        <span class="package">mailx</span>. Note that the script requires two parameters:
+        <code class="literal">$1</code>, the email address, and <code class="literal">$2</code>, the name of the unit
+        file used by the timer. Both parameters will be provided by the unit file running the mail
+        script.
+      </p><div class="verbatim-wrap"><pre class="screen">#!/bin/sh
+systemctl status --full "$2" | mailx -S sendwait\
+ -s "Timer failure for $2" -r root@$HOSTNAME $1</pre></div><p>
+        Make sure the scrtipt you just created is executable:
+      </p><div class="verbatim-wrap"><pre class="screen">sudo chmod 755 /usr/local/bin/send_systemd_email</pre></div><div id="id-1.8.4.1.5" data-id-title="Requires Postfix" class="admonition note normal"><img class="symbol" alt="Note" title="Note" src="static/images/icon-note.svg"/><div class="admon-title">Note: Requires Postfix</div><p>
+          Note that in order to send emails you need to install and configure the email server
+          Postfix on your system. The latter can be done via <span class="guimenu">YaST</span> › <span class="guimenu">Network Services</span> › <span class="guimenu">Mail Server</span>.
+        </p></div></li><li class="step"><p>
+        Create the file
+        <code class="filename">/etc/systemd/system/send_email_to_<em class="replaceable">user</em>@.service</code>.
+        Note that you need to replace <em class="replaceable">user</em> in the file name with the
+        login of the user that should receive the email.
+      </p><div class="verbatim-wrap"><pre class="screen">[Unit]
+Description=Send systemd status information by email for %i to <em class="replaceable">user</em>
 
------------------------------------------------------------------------------------------------------------------------------
-Tue 2021-10-26 19:00:00 CEST 39min left Tue 2021-10-26 18:00:29 CEST 19min ago snapper-timeline.timer snapper-timeline.service
-Wed 2021-10-27 08:33:04 CEST 14h   left Tue 2021-10-26 08:33:04 CEST 9h ago    snapper-cleanup.timer  snapper-cleanup.service</pre></div><div class="itemizedlist "><ul class="itemizedlist"><li class="listitem "><p>
-     <code class="literal">NEXT</code> shows the next time the timer will run.
-    </p></li><li class="listitem "><p>
-     <code class="literal">LEFT</code> shows how long till the next time the timer runs.
-    </p></li><li class="listitem "><p>
-     <code class="literal">LAST</code> shows the last time the timer ran.
-    </p></li><li class="listitem "><p>
-     <code class="literal">PASSED</code> shows how long has passed since the timer last ran.
-    </p></li><li class="listitem "><p>
-     <code class="literal">UNIT</code> shows the name of the timer.
-    </p></li><li class="listitem "><p>
-     <code class="literal">ACTIVATES</code> shows the name the service the timer activates when it runs.
-    </p></li></ul></div></div></div></div></div><div class="sect1" id="systemd-timer-user"><div class="titlepage"><div><div><h2 class="title"><span class="number"> </span><span xmlns:dm="urn:x-suse:ns:docmanager" class="name">Using timers as a regular user</span> <a title="Permalink" class="permalink" href="#systemd-timer-user">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><div><div class="abstract"><p>
-    systemd timers can also be used by regular users to, for example,
-    automate reoccurring tasks.
-   </p></div></div></div></div><p>
-  Similar to cron, you can also use systemd timers as a regular users. It
-  will help you to automate reoccuring tasks like regular backups, processing
-  images, or moving data to the cloud. The same procedures and tasks as
-  mentioned above are valid, however the following differences apply:
- </p><div class="itemizedlist "><ul class="itemizedlist"><li class="listitem "><p>
-    Timer and service files need to be placed in <code class="filename">~/.config/systemd/user/</code>.
-   </p></li><li class="listitem "><p>
-    All <code class="command">systemctl</code> and <code class="command">journalctl</code> command
-    need to be run with the <code class="option">--user</code> switch. Note that
-    <code class="command">systemd-analyze</code> does <span class="emphasis"><em>not</em></span> support
-    this option.
-   </p><div class="verbatim-wrap"><pre class="screen"><code class="prompt user">tux &gt; </code>systemctl --user start ~/.config/systemd/user/helloworld.timer
-<code class="prompt user">tux &gt; </code>systemctl --user enable ~/.config/systemd/user/helloworld.timer
-<code class="prompt user">tux &gt; </code>systemctl --user list-timers
-<code class="prompt user">tux &gt; </code>journalctl --user -u helloworld.*
-<code class="prompt user">tux &gt; </code>systemctl-analyze ~/.config/systemd/user/helloworld.timer</pre></div><div id="id-1.8.3.2.3" class="admonition note normal"><img class="symbol" alt="Note" title="Note" src="static/images/icon-note.svg" /><h6>Note: Provide the path for the unit files</h6><p>
-     As a regular user. you should provide the path to the unit files as in the
-     exampüles above, to avoid conffusion with system unit files with the same
-     name.
-    </p></div></li></ul></div><div id="id-1.8.4" class="admonition important normal"><img class="symbol" alt="Important" title="Important" src="static/images/icon-important.svg" /><h6>Important: Environment variables are not inherited</h6><p>
-   The systemd user instance does not inherit environment variables set by
-   scripts like <code class="filename">~/.profile</code> or
-   <code class="filename">~/.bashrc</code>. To check the systemd environment run
-   <code class="command">systemctl --user show-environment</code>.
-  </p><p>
-   To import any variables missing in the systemd environment, specify the following command at the end of you
-   <code class="filename">~/.bashrc</code>:
-  </p><div class="verbatim-wrap"><pre class="screen">systemctl --user import-environment <em class="replaceable ">VARIABLE1</em> <em class="replaceable ">VARIABLE2</em></pre></div></div></div><div class="sect1" id="systemd-timer-troubleshoot"><div class="titlepage"><div><div><h2 class="title"><span class="number"> </span><span xmlns:dm="urn:x-suse:ns:docmanager" class="name">Troubleshooting</span> <a title="Permalink" class="permalink" href="#systemd-timer-troubleshoot">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><div><div class="abstract"><p>
-    Learn how to find and troubleshoot systemd timers that have failed.
-   </p></div></div></div></div><div class="sect2" id="id-1.9.2"><div class="titlepage"><div><div><h3 class="title"><span class="number">8.1 </span><span xmlns:dm="urn:x-suse:ns:docmanager" class="name">Avoiding errors</span> <a title="Permalink" class="permalink" href="#id-1.9.2">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h3></div></div></div><p>
-   To avoid errors with systemd timers make sure to
-  </p><div class="itemizedlist "><ul class="itemizedlist"><li class="listitem "><p>
-     Verify the executable you specify in the service with
-     <code class="literal">ExecStart</code>file runs without problems
-    </p></li><li class="listitem "><p>
-     check the syntax of the service and timer files by running
-     <code class="command">systemd-analyze verify <em class="replaceable ">FILE</em></code>
-     as shown below
-    </p></li><li class="listitem "><p>
-     check execution times of calendar entries by running
-     <code class="command">systemd-analyze calendar <em class="replaceable ">CALENDER_ENTRY</em></code>
-    </p></li></ul></div></div><div class="sect2" id="id-1.9.3"><div class="titlepage"><div><div><h3 class="title"><span class="number">8.2 </span><span xmlns:dm="urn:x-suse:ns:docmanager" class="name">Event is not triggered</span> <a title="Permalink" class="permalink" href="#id-1.9.3">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h3></div></div></div><p>
-   When you activate a timer that contains non-fatal errors systemda will
-   silently ignore these errors. Given is the following example:
-  </p><div class="complex-example"><div class="example" id="id-1.9.3.3"><div class="example-title-wrap"><h6 class="example-title"><span class="number">Example 4: </span><span class="name">systemd timer file cutout containing a non-fatal error </span><a title="Permalink" class="permalink" href="#id-1.9.3.3">#</a></h6></div><div class="example-contents"><div class="verbatim-wrap"><pre class="screen">[Timer]
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/send_systemd_email <em class="replaceable">e-mail_address</em> %i
+User=root
+Group=systemd-journal</pre></div><p>
+        Note that you need to replace <em class="replaceable">user</em> and
+        <em class="replaceable">e-mail_address</em> in the file with the login and the e-mail address
+        of the user that should receive the email. <code class="literal">%i</code> is the name of the service
+        that has failed (it will be passed on to the e-mail service (by the <code class="literal">%n</code>
+        parameter).
+      </p></li><li class="step"><p>
+        To make sure the service file works correctly, verify it and fix any errors that may be
+        reported:
+      </p><div class="verbatim-wrap"><pre class="screen">systemd-analyze verify /etc/systemd/system/send_email_to_<em class="replaceable">user</em>@.service</pre></div><p>
+        If the command returns no output, the file has passed the verification successfully.
+      </p><p>
+        Now start the service using the <code class="literal">dbus</code> instance for testing (you may use
+        any other service that is currently running. We are using dbus here, because this service
+        is guaranteed to run on any installation).
+      </p><div class="verbatim-wrap"><pre class="screen">sudo systemctl start send_email_to_<em class="replaceable">user</em>@dbus.service</pre></div><p>
+        If successful, <em class="replaceable">e-mail_address</em> will receive an e-mail with the
+        subject <code class="literal">Timer failure for dbus</code> containing dbus status messages in the
+        body. (Note that this is just a test, there is no problem with the dbus service. You can
+        safely delete the mail, no action is required).
+      </p><p>
+        If the test e-mail has been successfully send, proceed by integrating it into your timer
+        file(s).
+      </p></li><li class="step"><p>
+        To add e-mail notification to your timer, add an <code class="literal">OnFailure</code> option to the
+        <code class="literal">Unit</code> section of the <span class="emphasis"><em>service</em></span> file that is started by
+        the timer:
+      </p><div class="verbatim-wrap"><pre class="screen">[Unit]
+Description="Hello World script"
+OnFailure<span class="callout" id="systemd-timer-mailto-onfailure">1</span>=send_email_to_<em class="replaceable">user</em><span class="callout" id="systemd-timer-mailto-user">2</span>@%n<span class="callout" id="systemd-timer-mailto-name">3</span>.service
+
+[Service]
+ExecStart=/usr/local/bin/helloworld.sh</pre></div><div class="calloutlist"><table style="border: 0; "><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer-mailto-onfailure"><span class="callout">1</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+            The <code class="literal">OnFailure</code> option takes a service as a argument.
+          </p></td></tr><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer-mailto-user"><span class="callout">2</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+            Replace with the login name part of the service unit's file name.
+          </p></td></tr><tr><td style="width: 5%; vertical-align: top; text-align: left; "><p><a href="#systemd-timer-mailto-name"><span class="callout">3</span></a> </p></td><td style="vertical-align: top; text-align: left; "><p>
+            Provides the name of the service (<code class="literal">helloworld</code> in this example). This
+            name is available in the e-mail service file as %i.
+          </p></td></tr></table></div></li><li class="step"><p>
+        You successfully set up failure notification for systemd services.
+      </p><div id="id-1.8.4.5.2" data-id-title="Scope of usage" class="admonition tip normal"><img class="symbol" alt="Tip" title="Tip" src="static/images/icon-tip.svg"/><div class="admon-title">Tip: Scope of usage</div><p>
+          Using the e-mail for systemd service failure notification is not restricted to systemd
+          timers. It can be used with any systemd service. The e-mailing service created above can
+          be also used with multiple service files simultaneously.
+        </p></div><div id="id-1.8.4.5.3" data-id-title="Sending e-mail notifications to multiple users" class="admonition tip normal"><img class="symbol" alt="Tip" title="Tip" src="static/images/icon-tip.svg"/><div class="admon-title">Tip: Sending e-mail notifications to multiple users</div><p>
+          While the e-mail script is generic, the email service file has the recipient's e-mail
+          address hard-coded. In order to send notification emails to a different user, copy the
+          e-mail service file and replace the user login in the file name and the e-mail address
+          within the copy.
+        </p><p>
+          To send a failure notification to several people at the same time, add the respective
+          service files space-separated to the service file:
+        </p><div class="verbatim-wrap"><pre class="screen">OnFailure=send_email_to_tux@%n.service send_email_to_wilber@%n.service</pre></div></div></li></ol></div></div></section><section xml:lang="en" class="sect1" id="systemd-timer-user" data-id-title="Using timers as a regular user"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number"> </span><span class="title-name">Using timers as a regular user</span></span> <a title="Permalink" class="permalink" href="#systemd-timer-user">#</a></h2><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div></div><div><div class="abstract"><p>
+        <code class="systemitem">systemd</code> timers can also be used by regular users to, for example, automate reoccurring
+        tasks.
+      </p></div></div></div></div><p>
+    Similar to cron, you can also use <code class="systemitem">systemd</code> timers as a regular users. It will help you to
+    automate reoccuring tasks like regular backups, processing images, or moving data to the
+    cloud. The same procedures and tasks as mentioned above are valid, however the following
+    differences apply:
+  </p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>
+        Timer and service files need to be placed in <code class="filename">~/.config/systemd/user/</code>.
+      </p></li><li class="listitem"><p>
+        All <code class="command">systemctl</code> and <code class="command">journalctl</code> command need to be run
+        with the <code class="option">--user</code> switch. Note that <code class="command">systemd-analyze</code> does
+        <span class="emphasis"><em>not</em></span> support this option.
+      </p><div class="verbatim-wrap"><pre class="screen"><code class="prompt user">&gt; </code>systemctl --user start ~/.config/systemd/user/helloworld.timer
+<code class="prompt user">&gt; </code>systemctl --user enable ~/.config/systemd/user/helloworld.timer
+<code class="prompt user">&gt; </code>systemctl --user list-timers
+<code class="prompt user">&gt; </code>journalctl --user -u helloworld.*
+<code class="prompt user">&gt; </code>systemctl-analyze ~/.config/systemd/user/helloworld.timer</pre></div><div id="id-1.9.3.2.3" data-id-title="Provide the path for the unit files" class="admonition note normal"><img class="symbol" alt="Note" title="Note" src="static/images/icon-note.svg"/><div class="admon-title">Note: Provide the path for the unit files</div><p>
+          As a regular user, you should provide the path to the unit files as in the examples
+          above, to avoid confusion with system unit files with the same name.
+        </p></div></li></ul></div><div id="id-1.9.4" data-id-title="User timers only run during an active session" class="admonition important normal"><img class="symbol" alt="Important" title="Important" src="static/images/icon-important.svg"/><div class="admon-title">Important: User timers only run during an active session</div><p>
+      As with other systemd services started as a regular user, user timers only run when the user
+      is logged in. In case you want to start user timers at boot time and continue them after log
+      out, enable lingering for each affected user:
+    </p><div class="verbatim-wrap"><pre class="screen">sudo loginctl enable-linger <em class="replaceable">USER</em></pre></div><p>
+      For more information refer to <code class="command">man 1 loginctl</code>.
+    </p></div><div id="id-1.9.5" data-id-title="Environment variables are not inherited" class="admonition important normal"><img class="symbol" alt="Important" title="Important" src="static/images/icon-important.svg"/><div class="admon-title">Important: Environment variables are not inherited</div><p>
+      The <code class="systemitem">systemd</code> user instance does not inherit environment variables set by scripts like
+      <code class="filename">~/.profile</code> or <code class="filename">~/.bashrc</code>. To check the systemd
+      environment run <code class="command">systemctl --user show-environment</code>.
+    </p><p>
+      To import any variables missing in the <code class="systemitem">systemd</code> environment, specify the following command
+      at the end of you <code class="filename">~/.bashrc</code>:
+    </p><div class="verbatim-wrap"><pre class="screen">systemctl --user import-environment <em class="replaceable">VARIABLE1</em> <em class="replaceable">VARIABLE2</em></pre></div></div></section><section xml:lang="en" class="sect1" id="systemd-timer-troubleshoot" data-id-title="Troubleshooting"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number"> </span><span class="title-name">Troubleshooting</span></span> <a title="Permalink" class="permalink" href="#systemd-timer-troubleshoot">#</a></h2><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div></div><div><div class="abstract"><p>
+        Learn how to find and troubleshoot systemd timers that have failed.
+      </p></div></div></div></div><section class="sect2" id="id-1.10.2" data-id-title="Avoiding errors"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">9.1 </span><span class="title-name">Avoiding errors</span></span> <a title="Permalink" class="permalink" href="#id-1.10.2">#</a></h3><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div></div></div></div><p>
+      To avoid errors with <code class="systemitem">systemd</code> timers make sure to
+    </p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>
+          Verify the executable you specify in the service with <code class="literal">ExecStart</code>
+          runs without problems.
+        </p></li><li class="listitem"><p>
+          check the syntax of the service and timer files by running <code class="command">systemd-analyze
+          verify <em class="replaceable">FILE</em></code>.
+        </p></li><li class="listitem"><p>
+          check execution times of calendar entries by running <code class="command">systemd-analyze calendar
+          <em class="replaceable">CALENDER_ENTRY</em></code>.
+        </p></li></ul></div></section><section class="sect2" id="id-1.10.3" data-id-title="Event is not triggered"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">9.2 </span><span class="title-name">Event is not triggered</span></span> <a title="Permalink" class="permalink" href="#id-1.10.3">#</a></h3><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div></div></div></div><p>
+      When you activate a timer that contains non-fatal errors <code class="systemitem">systemd</code>a will silently ignore
+      these errors. Given is the following example:
+    </p><div class="complex-example"><div class="example" id="id-1.10.3.3" data-id-title="systemd timer file cutout containing a non-fatal error"><div class="title-container"><div class="example-title-wrap"><div class="example-title"><span class="title-number-name"><span class="title-number">Example 4: </span><span class="title-name"><code class="systemitem">systemd</code> timer file cutout containing a non-fatal error </span></span><a title="Permalink" class="permalink" href="#id-1.10.3.3">#</a></div></div><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div><div class="example-contents"><div class="verbatim-wrap"><pre class="screen">[Timer]
 OnBootSec=5min
 OnClendar=Mon..Fri 10:00
 Unit=helloworld.service</pre></div><p>
-    Line 3 contains a syntax error (<code class="literal">OnClendar</code> instead of
-    <code class="literal">OnCalendar</code>). Since the <code class="literal">[Timer]</code>
-    section contains a second timer entry (OnBoot) this error is not fatal and
-    will silently be ignored. As a consequence the Monday to Friday trigger
-    would not be executed. The only way to detect the error is via
-    <code class="command">systemd-analyze verify</code>:
-   </p><div class="verbatim-wrap"><pre class="screen"><code class="prompt root">root # </code> systemd-analyze verify /etc/systemd/system/helloworld.timer
-/etc/systemd/system/helloworld.timer:7: Unknown key name 'OnClendar' in section 'Timer', ignoring.</pre></div></div></div></div></div><div class="sect2" id="id-1.9.4"><div class="titlepage"><div><div><h3 class="title"><span class="number">8.3 </span><span xmlns:dm="urn:x-suse:ns:docmanager" class="name">Checking the system journal</span> <a title="Permalink" class="permalink" href="#id-1.9.4">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h3></div></div></div><p>
-   As with every systemd service, events and actions triggered by timers are
-   looged with the system journal. In case a trigger does not behave as
-   expected, check the log messages with <code class="command">journalctl</code>. To
-   filter the journal for what matters, use the <code class="option">-u</code> switch to
-   specify the systemd timers and service files. You should use it in a way
-   that it shows the log entries for the timer <span class="emphasis"><em>and</em></span> the
-   corresponding service file:
-  </p><div class="verbatim-wrap"><pre class="screen">journalctl -u  helloworld.timer -u helloworld.service</pre></div><p>or shorter (if applicable):</p><div class="verbatim-wrap"><pre class="screen">journalctl -u  helloworld.*</pre></div><p>
-   <code class="command">journalctl</code> is a tool that supports many options and
-   filters. Please refer to man journalctl for in-depth information. The
-   following options will be helpful when troublewshooting timers:
-  </p><div class="itemizedlist "><ul class="itemizedlist"><li class="listitem "><p>
-     <code class="option">-b</code>: Only show entries for the current boot.
-    </p></li><li class="listitem "><p>
-     <code class="option">-S today</code>: only show entries from today.
-    </p></li><li class="listitem "><p>
-     <code class="option">-x</code>: Show explanatory help texts alongside the log entry.
-    </p></li><li class="listitem "><p>
-     <code class="option">-f</code>: Start with the most recent entries and continuously
-     print the log as new entries get added. Useful to check triggers that
-     occur in short intervals. Exit with <span class="keycap">Ctrl</span><span class="key-connector">–</span><span class="keycap">C</span>.
-    </p></li></ul></div></div></div><div class="sect1" id="id-1.10"><div class="titlepage"><div><div><h2 class="title"><span class="number"> </span><span xmlns:dm="urn:x-suse:ns:docmanager" class="name">Legal Notice</span> <a title="Permalink" class="permalink" href="#id-1.10">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div></div></div><p> Copyright© 2006– 2022 SUSE LLC and contributors.
+        Line 3 contains a syntax error (<code class="literal">OnClendar</code> instead of
+        <code class="literal">OnCalendar</code>). Since the <code class="literal">[Timer]</code> section contains a
+        second timer entry (OnBoot) this error is not fatal and will silently be ignored. As a
+        consequence the Monday to Friday trigger would not be executed. The only way to detect the
+        error is via <code class="command">systemd-analyze verify</code>:
+      </p><div class="verbatim-wrap"><pre class="screen"><code class="prompt root"># </code> systemd-analyze verify /etc/systemd/system/helloworld.timer
+/etc/systemd/system/helloworld.timer:7: Unknown key name 'OnClendar' in section 'Timer', ignoring.</pre></div></div></div></div></section><section class="sect2" id="id-1.10.4" data-id-title="Checking the system journal"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">9.3 </span><span class="title-name">Checking the system journal</span></span> <a title="Permalink" class="permalink" href="#id-1.10.4">#</a></h3><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div></div></div></div><p>
+      As with every <code class="systemitem">systemd</code> service, events and actions triggered by timers are looged with the
+      system journal. In case a trigger does not behave as expected, check the log messages with
+      <code class="command">journalctl</code>. To filter the journal for what matters, use the
+      <code class="option">-u</code> switch to specify the systemd timers and service files. You should use it
+      in a way that it shows the log entries for the timer <span class="emphasis"><em>and</em></span> the
+      corresponding service file:
+    </p><div class="verbatim-wrap"><pre class="screen">sudo journalctl -u  helloworld.timer -u helloworld.service</pre></div><p>or shorter (if applicable):</p><div class="verbatim-wrap"><pre class="screen">sudo journalctl -u  helloworld.*</pre></div><p>
+      <code class="command">journalctl</code> is a tool that supports many options and filters. Please refer
+      to man journalctl for in-depth information. The following options will be helpful when
+      troublewshooting timers:
+    </p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>
+          <code class="option">-b</code>: Only show entries for the current boot.
+        </p></li><li class="listitem"><p>
+          <code class="option">-S today</code>: only show entries from today.
+        </p></li><li class="listitem"><p>
+          <code class="option">-x</code>: Show explanatory help texts alongside the log entry.
+        </p></li><li class="listitem"><p>
+          <code class="option">-f</code>: Start with the most recent entries and continuously print the log as
+          new entries get added. Useful to check triggers that occur in short intervals. Exit with
+          <span class="keycap">Ctrl</span><span class="key-connector">–</span><span class="keycap">C</span>.
+        </p></li></ul></div></section></section><section class="sect1" id="id-1.11" data-id-title="Legal Notice"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number"> </span><span class="title-name">Legal Notice</span></span> <a title="Permalink" class="permalink" href="#id-1.11">#</a></h2><div class="icons"><a target="_blank" class="icon-reportbug" title="Report an issue"> </a><a target="_blank" class="icon-editsource" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit source document"> </a></div></div></div></div></div><p> Copyright© 2006– 2023 SUSE LLC and contributors.
   All rights reserved. </p><p> Permission is granted to copy, distribute and/or modify this document
   under the terms of the GNU Free Documentation License, Version 1.2 or (at your
   option) version 1.3; with the Invariant Section being this copyright notice
   and license. A copy of the license version 1.2 is included in the section
-  entitled <span class="quote">“<span class="quote ">GNU Free Documentation License</span>”</span>. </p><p> For SUSE trademarks, see <a class="link" href="http://www.suse.com/company/legal/" target="_blank">http://www.suse.com/company/legal/</a>. All other third-party
+  entitled <span class="quote">“<span class="quote">GNU Free Documentation License</span>”</span>. </p><p> For SUSE trademarks, see <a class="link" href="http://www.suse.com/company/legal/" target="_blank">http://www.suse.com/company/legal/</a>. All other third-party
   trademarks are the property of their respective owners. Trademark symbols (®,
   ™ etc.) denote trademarks of SUSE and its affiliates. Asterisks (*) denote
   third-party trademarks. </p><p> All information found in this book has been compiled with utmost
   attention to detail. However, this does not guarantee complete accuracy.
   Neither SUSE LLC, its affiliates, the authors, nor the translators shall be
-  held liable for possible errors or the consequences thereof. </p></div><div class="legal-section"><div class="appendix " id="id-1.11"><div class="titlepage"><div><div><h1 class="title">GNU Licenses</h1></div></div></div><div class="line"></div><p> This appendix contains the GNU Free Documentation License version 1.2. </p><div class="sect1 " id="id-1.11.3"><div class="titlepage"><div><div><h2 class="title legal"><span xmlns:dm="urn:x-suse:ns:docmanager" class="name">GNU Free Documentation License</span> <a title="Permalink" class="permalink" href="#id-1.11.3">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div></div></div><p> Copyright (C) 2000, 2001, 2002 Free Software Foundation, Inc. 51
-  Franklin St, Fifth Floor, Boston, MA 02110-1301 USA. Everyone is permitted to
-  copy and distribute verbatim copies of this license document, but changing it
-  is not allowed. </p><div xmlns:dm="urn:x-suse:ns:docmanager" class="sect1 bridgehead"><h2 class="title legal" id="id-1.11.3.3"><span class="name">0. PREAMBLE</span><a title="Permalink" class="permalink" href="#id-1.11.3.3">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><p> The purpose of this License is to make a manual, textbook, or other
+  held liable for possible errors or the consequences thereof. </p></section><div class="legal-section"><section class="appendix" id="id-1.12" data-id-title="GNU Free Documentation License"><div class="titlepage"><div><div><h1 class="title">GNU Free Documentation License</h1></div></div></div><p>
+  Copyright (C) 2000, 2001, 2002 Free Software Foundation, Inc. 51 Franklin St,
+  Fifth Floor, Boston, MA 02110-1301 USA. Everyone is permitted to copy and
+  distribute verbatim copies of this license document, but changing it is not
+  allowed.
+ </p><div class="sect4 bridgehead"><h5 class="title legal" id="id-1.12.3"><span class="name">
+    0. PREAMBLE
+  </span><a title="Permalink" class="permalink" href="#id-1.12.3">#</a></h5></div><p>
+  The purpose of this License is to make a manual, textbook, or other
   functional and useful document "free" in the sense of freedom: to assure
   everyone the effective freedom to copy and redistribute it, with or without
-  modifying it, either commercially or noncommercially. Secondarily, this
+  modifying it, either commercially or non-commercially. Secondarily, this
   License preserves for the author and publisher a way to get credit for their
-  work, while not being considered responsible for modifications made by others. </p><p> This License is a kind of "copyleft", which means that derivative works
-  of the document must themselves be free in the same sense. It complements the
+  work, while not being considered responsible for modifications made by
+  others.
+ </p><p>
+  This License is a kind of "copyleft", which means that derivative works of
+  the document must themselves be free in the same sense. It complements the
   GNU General Public License, which is a copyleft license designed for free
-  software. </p><p> We have designed this License in order to use it for manuals for free
-  software, because free software needs free documentation: a free program
-  should come with manuals providing the same freedoms that the software does.
-  But this License is not limited to software manuals; it can be used for any
-  textual work, regardless of subject matter or whether it is published as a
-  printed book. We recommend this License principally for works whose purpose is
-  instruction or reference. </p><div xmlns:dm="urn:x-suse:ns:docmanager" class="sect1 bridgehead"><h2 class="title legal" id="id-1.11.3.7"><span class="name">1. APPLICABILITY AND DEFINITIONS</span><a title="Permalink" class="permalink" href="#id-1.11.3.7">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><p> This License applies to any manual or other work, in any medium, that
+  software.
+ </p><p>
+  We have designed this License to use it for manuals for free software,
+  because free software needs free documentation: a free program should come
+  with manuals providing the same freedoms that the software does. But this
+  License is not limited to software manuals; it can be used for any textual
+  work, regardless of subject matter or whether it is published as a printed
+  book. We recommend this License principally for works whose purpose is
+  instruction or reference.
+ </p><div class="sect4 bridgehead"><h5 class="title legal" id="id-1.12.7"><span class="name">
+    1. APPLICABILITY AND DEFINITIONS
+  </span><a title="Permalink" class="permalink" href="#id-1.12.7">#</a></h5></div><p>
+  This License applies to any manual or other work, in any medium, that
   contains a notice placed by the copyright holder saying it can be distributed
   under the terms of this License. Such a notice grants a world-wide,
   royalty-free license, unlimited in duration, to use that work under the
   conditions stated herein. The "Document", below, refers to any such manual or
   work. Any member of the public is a licensee, and is addressed as "you". You
   accept the license if you copy, modify or distribute the work in a way
-  requiring permission under copyright law. </p><p> A "Modified Version" of the Document means any work containing the
-  Document or a portion of it, either copied verbatim, or with modifications
-  and/or translated into another language. </p><p> A "Secondary Section" is a named appendix or a front-matter section of
-  the Document that deals exclusively with the relationship of the publishers or
+  requiring permission under copyright law.
+ </p><p>
+  A "Modified Version" of the Document means any work containing the Document
+  or a portion of it, either copied verbatim, or with modifications and/or
+  translated into another language.
+ </p><p>
+  A "Secondary Section" is a named appendix or a front-matter section of the
+  Document that deals exclusively with the relationship of the publishers or
   authors of the Document to the Document's overall subject (or to related
   matters) and contains nothing that could fall directly within that overall
   subject. (Thus, if the Document is in part a textbook of mathematics, a
   Secondary Section may not explain any mathematics.) The relationship could be
-  a matter of historical connection with the subject or with related matters, or
-  of legal, commercial, philosophical, ethical or political position regarding
-  them. </p><p> The "Invariant Sections" are certain Secondary Sections whose titles are
-  designated, as being those of Invariant Sections, in the notice that says that
-  the Document is released under this License. If a section does not fit the
-  above definition of Secondary then it is not allowed to be designated as
+  a matter of historical connection with the subject or with related matters,
+  or of legal, commercial, philosophical, ethical or political position
+  regarding them.
+ </p><p>
+  The "Invariant Sections" are certain Secondary Sections whose titles are
+  designated, as being those of Invariant Sections, in the notice that says
+  that the Document is released under this License. If a section does not fit
+  the above definition of Secondary then it is not allowed to be designated as
   Invariant. The Document may contain zero Invariant Sections. If the Document
-  does not identify any Invariant Sections then there are none. </p><p> The "Cover Texts" are certain short passages of text that are listed, as
+  does not identify any Invariant Sections then there are none.
+ </p><p>
+  The "Cover Texts" are certain short passages of text that are listed, as
   Front-Cover Texts or Back-Cover Texts, in the notice that says that the
   Document is released under this License. A Front-Cover Text may be at most 5
-  words, and a Back-Cover Text may be at most 25 words. </p><p> A "Transparent" copy of the Document means a machine-readable copy,
+  words, and a Back-Cover Text may be at most 25 words.
+ </p><p>
+  A "Transparent" copy of the Document means a machine-readable copy,
   represented in a format whose specification is available to the general
   public, that is suitable for revising the document straightforwardly with
-  generic text editors or (for images composed of pixels) generic paint programs
-  or (for drawings) some widely available drawing editor, and that is suitable
-  for input to text formatters or for automatic translation to a variety of
-  formats suitable for input to text formatters. A copy made in an otherwise
-  Transparent file format whose markup, or absence of markup, has been arranged
-  to thwart or discourage subsequent modification by readers is not Transparent.
-  An image format is not Transparent if used for any substantial amount of text.
-  A copy that is not "Transparent" is called "Opaque". </p><p> Examples of suitable formats for Transparent copies include plain ASCII
+  generic text editors or (for images composed of pixels) generic paint
+  programs or (for drawings) some widely available drawing editor, and that is
+  suitable for input to text formatters or for automatic translation to a
+  variety of formats suitable for input to text formatters. A copy made in an
+  otherwise Transparent file format whose markup, or absence of markup, has
+  been arranged to thwart or discourage subsequent modification by readers is
+  not Transparent. An image format is not Transparent if used for any
+  substantial amount of text. A copy that is not "Transparent" is called
+  "Opaque".
+ </p><p>
+  Examples of suitable formats for Transparent copies include plain ASCII
   without markup, Texinfo input format, LaTeX input format, SGML or XML using a
-  publicly available DTD, and standard-conforming simple HTML, PostScript or PDF
-  designed for human modification. Examples of transparent image formats include
-  PNG, XCF and JPG. Opaque formats include proprietary formats that can be read
-  and edited only by proprietary word processors, SGML or XML for which the DTD
-  and/or processing tools are not generally available, and the machine-generated
-  HTML, PostScript or PDF produced by some word processors for output purposes
-  only. </p><p> The "Title Page" means, for a printed book, the title page itself, plus
-  such following pages as are needed to hold, legibly, the material this License
+  publicly available DTD, and standard-conforming simple HTML, PostScript or
+  PDF designed for human modification. Examples of transparent image formats
+  include PNG, XCF and JPG. Opaque formats include proprietary formats that can
+  be read and edited only by proprietary word processors, SGML or XML for which
+  the DTD and/or processing tools are not generally available, and the
+  machine-generated HTML, PostScript or PDF produced by some word processors
+  for output purposes only.
+ </p><p>
+  The "Title Page" means, for a printed book, the title page itself, plus such
+  following pages as are needed to hold, legibly, the material this License
   requires to appear in the title page. For works in formats which do not have
   any title page as such, "Title Page" means the text near the most prominent
   appearance of the work's title, preceding the beginning of the body of the
-  text. </p><p> A section "Entitled XYZ" means a named subunit of the Document whose
-  title either is precisely XYZ or contains XYZ in parentheses following text
-  that translates XYZ in another language. (Here XYZ stands for a specific
-  section name mentioned below, such as "Acknowledgements", "Dedications",
+  text.
+ </p><p>
+  A section "Entitled XYZ" means a named subunit of the Document whose title
+  either is precisely XYZ or contains XYZ in parentheses following text that
+  translates XYZ in another language. (Here XYZ stands for a specific section
+  name mentioned below, such as "Acknowledgements", "Dedications",
   "Endorsements", or "History".) To "Preserve the Title" of such a section when
   you modify the Document means that it remains a section "Entitled XYZ"
-  according to this definition. </p><p> The Document may include Warranty Disclaimers next to the notice which
-  states that this License applies to the Document. These Warranty Disclaimers
-  are considered to be included by reference in this License, but only as
-  regards disclaiming warranties: any other implication that these Warranty
-  Disclaimers may have is void and has no effect on the meaning of this License. </p><div xmlns:dm="urn:x-suse:ns:docmanager" class="sect1 bridgehead"><h2 class="title legal" id="id-1.11.3.18"><span class="name"> 2. VERBATIM COPYING </span><a title="Permalink" class="permalink" href="#id-1.11.3.18">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><p> You may copy and distribute the Document in any medium, either
-  commercially or noncommercially, provided that this License, the copyright
-  notices, and the license notice saying this License applies to the Document
-  are reproduced in all copies, and that you add no other conditions whatsoever
-  to those of this License. You may not use technical measures to obstruct or
-  control the reading or further copying of the copies you make or distribute.
-  However, you may accept compensation in exchange for copies. If you distribute
-  a large enough number of copies you must also follow the conditions in section
-  3. </p><p> You may also lend copies, under the same conditions stated above, and
-  you may publicly display copies. </p><div xmlns:dm="urn:x-suse:ns:docmanager" class="sect1 bridgehead"><h2 class="title legal" id="id-1.11.3.21"><span class="name"> 3. COPYING IN QUANTITY </span><a title="Permalink" class="permalink" href="#id-1.11.3.21">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><p> If you publish printed copies (or copies in media that commonly have
-  printed covers) of the Document, numbering more than 100, and the Document's
-  license notice requires Cover Texts, you must enclose the copies in covers
-  that carry, clearly and legibly, all these Cover Texts: Front-Cover Texts on
-  the front cover, and Back-Cover Texts on the back cover. Both covers must also
+  according to this definition.
+ </p><p>
+  The Document may include Warranty Disclaimers next to the notice which states
+  that this License applies to the Document. These Warranty Disclaimers are
+  considered to be included by reference in this License, but only as regards
+  disclaiming warranties: any other implication that these Warranty Disclaimers
+  may have is void and has no effect on the meaning of this License.
+ </p><div class="sect4 bridgehead"><h5 class="title legal" id="id-1.12.18"><span class="name">
+    2. VERBATIM COPYING
+  </span><a title="Permalink" class="permalink" href="#id-1.12.18">#</a></h5></div><p>
+  You may copy and distribute the Document in any medium, either commercially
+  or non-commercially, provided that this License, the copyright notices, and
+  the license notice saying this License applies to the Document are reproduced
+  in all copies, and that you add no other conditions whatsoever to those of
+  this License. You may not use technical measures to obstruct or control the
+  reading or further copying of the copies you make or distribute. However, you
+  may accept compensation in exchange for copies. If you distribute a large
+  enough number of copies you must also follow the conditions in section 3.
+ </p><p>
+  You may also lend copies, under the same conditions stated above, and you may
+  publicly display copies.
+ </p><div class="sect4 bridgehead"><h5 class="title legal" id="id-1.12.21"><span class="name">
+    3. COPYING IN QUANTITY
+  </span><a title="Permalink" class="permalink" href="#id-1.12.21">#</a></h5></div><p>
+  If you publish printed copies (or copies in media that commonly have printed
+  covers) of the Document, numbering more than 100, and the Document's license
+  notice requires Cover Texts, you must enclose the copies in covers that
+  carry, clearly and legibly, all these Cover Texts: Front-Cover Texts on the
+  front cover, and Back-Cover Texts on the back cover. Both covers must also
   clearly and legibly identify you as the publisher of these copies. The front
   cover must present the full title with all words of the title equally
   prominent and visible. You may add other material on the covers in addition.
-  Copying with changes limited to the covers, as long as they preserve the title
-  of the Document and satisfy these conditions, can be treated as verbatim
-  copying in other respects. </p><p> If the required texts for either cover are too voluminous to fit
-  legibly, you should put the first ones listed (as many as fit reasonably) on
-  the actual cover, and continue the rest onto adjacent pages. </p><p> If you publish or distribute Opaque copies of the Document numbering
-  more than 100, you must either include a machine-readable Transparent copy
-  along with each Opaque copy, or state in or with each Opaque copy a
+  Copying with changes limited to the covers, as long as they preserve the
+  title of the Document and satisfy these conditions, can be treated as
+  verbatim copying in other respects.
+ </p><p>
+  If the required texts for either cover are too voluminous to fit legibly, you
+  should put the first ones listed (as many as fit reasonably) on the actual
+  cover, and continue the rest onto adjacent pages.
+ </p><p>
+  If you publish or distribute Opaque copies of the Document numbering more
+  than 100, you must either include a machine-readable Transparent copy along
+  with each Opaque copy, or state in or with each Opaque copy a
   computer-network location from which the general network-using public has
   access to download using public-standard network protocols a complete
   Transparent copy of the Document, free of added material. If you use the
@@ -574,134 +734,222 @@ Unit=helloworld.service</pre></div><p>
   distribution of Opaque copies in quantity, to ensure that this Transparent
   copy will remain thus accessible at the stated location until at least one
   year after the last time you distribute an Opaque copy (directly or through
-  your agents or retailers) of that edition to the public. </p><p> It is requested, but not required, that you contact the authors of the
-  Document well before redistributing any large number of copies, to give them a
-  chance to provide you with an updated version of the Document. </p><div xmlns:dm="urn:x-suse:ns:docmanager" class="sect1 bridgehead"><h2 class="title legal" id="id-1.11.3.26"><span class="name"> 4. MODIFICATIONS </span><a title="Permalink" class="permalink" href="#id-1.11.3.26">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><p> You may copy and distribute a Modified Version of the Document under the
+  your agents or retailers) of that edition to the public.
+ </p><p>
+  It is requested, but not required, that you contact the authors of the
+  Document well before redistributing any large number of copies, to give them
+  a chance to provide you with an updated version of the Document.
+ </p><div class="sect4 bridgehead"><h5 class="title legal" id="id-1.12.26"><span class="name">
+    4. MODIFICATIONS
+  </span><a title="Permalink" class="permalink" href="#id-1.12.26">#</a></h5></div><p>
+  You may copy and distribute a Modified Version of the Document under the
   conditions of sections 2 and 3 above, provided that you release the Modified
   Version under precisely this License, with the Modified Version filling the
   role of the Document, thus licensing distribution and modification of the
   Modified Version to whoever possesses a copy of it. In addition, you must do
-  these things in the Modified Version: </p><div class="orderedlist "><ol class="orderedlist" type="A"><li class="listitem "><p> Use in the Title Page (and on the covers, if any) a title distinct
-    from that of the Document, and from those of previous versions (which
-    should, if there were any, be listed in the History section of the
-    Document). You may use the same title as a previous version if the original
-    publisher of that version gives permission. </p></li><li class="listitem "><p> List on the Title Page, as authors, one or more persons or entities
+  these things in the Modified Version:
+ </p><div class="orderedlist"><ol class="orderedlist" type="A"><li class="listitem"><p>
+    Use in the Title Page (and on the covers, if any) a title distinct from
+    that of the Document, and from those of previous versions (which should, if
+    there were any, be listed in the History section of the Document). You may
+    use the same title as a previous version if the original publisher of that
+    version gives permission.
+   </p></li><li class="listitem"><p>
+    List on the Title Page, as authors, one or more persons or entities
     responsible for authorship of the modifications in the Modified Version,
-    together with at least five of the principal authors of the Document (all of
-    its principal authors, if it has fewer than five), unless they release you
-    from this requirement. </p></li><li class="listitem "><p> State on the Title page the name of the publisher of the Modified
-    Version, as the publisher. </p></li><li class="listitem "><p> Preserve all the copyright notices of the Document. </p></li><li class="listitem "><p> Add an appropriate copyright notice for your modifications adjacent to
-    the other copyright notices. </p></li><li class="listitem "><p> Include, immediately after the copyright notices, a license notice
-    giving the public permission to use the Modified Version under the terms of
-    this License, in the form shown in the Addendum below. </p></li><li class="listitem "><p> Preserve in that license notice the full lists of Invariant Sections
-    and required Cover Texts given in the Document's license notice. </p></li><li class="listitem "><p> Include an unaltered copy of this License. </p></li><li class="listitem "><p> Preserve the section Entitled "History", Preserve its Title, and add
-    to it an item stating at least the title, year, new authors, and publisher
-    of the Modified Version as given on the Title Page. If there is no section
+    together with at least five of the principal authors of the Document (all
+    of its principal authors, if it has fewer than five), unless they release
+    you from this requirement.
+   </p></li><li class="listitem"><p>
+    State on the Title page the name of the publisher of the Modified Version,
+    as the publisher.
+   </p></li><li class="listitem"><p>
+    Preserve all the copyright notices of the Document.
+   </p></li><li class="listitem"><p>
+    Add an appropriate copyright notice for your modifications adjacent to the
+    other copyright notices.
+   </p></li><li class="listitem"><p>
+    Include, immediately after the copyright notices, a license notice giving
+    the public permission to use the Modified Version under the terms of this
+    License, in the form shown in the Addendum below.
+   </p></li><li class="listitem"><p>
+    Preserve in that license notice the full lists of Invariant Sections and
+    required Cover Texts given in the Document's license notice.
+   </p></li><li class="listitem"><p>
+    Include an unaltered copy of this License.
+   </p></li><li class="listitem"><p>
+    Preserve the section Entitled "History", Preserve its Title, and add to it
+    an item stating at least the title, year, new authors, and publisher of the
+    Modified Version as given on the Title Page. If there is no section
     Entitled "History" in the Document, create one stating the title, year,
     authors, and publisher of the Document as given on its Title Page, then add
     an item describing the Modified Version as stated in the previous sentence.
-   </p></li><li class="listitem "><p> Preserve the network location, if any, given in the Document for
-    public access to a Transparent copy of the Document, and likewise the
-    network locations given in the Document for previous versions it was based
-    on. These may be placed in the "History" section. You may omit a network
+   </p></li><li class="listitem"><p>
+    Preserve the network location, if any, given in the Document for public
+    access to a Transparent copy of the Document, and likewise the network
+    locations given in the Document for previous versions it was based on.
+    These may be placed in the "History" section. You may omit a network
     location for a work that was published at least four years before the
     Document itself, or if the original publisher of the version it refers to
-    gives permission. </p></li><li class="listitem "><p> For any section Entitled "Acknowledgements" or "Dedications", Preserve
-    the Title of the section, and preserve in the section all the substance and
+    gives permission.
+   </p></li><li class="listitem"><p>
+    For any section Entitled "Acknowledgements" or "Dedications", Preserve the
+    Title of the section, and preserve in the section all the substance and
     tone of each of the contributor acknowledgements and/or dedications given
-    therein. </p></li><li class="listitem "><p> Preserve all the Invariant Sections of the Document, unaltered in
-    their text and in their titles. Section numbers or the equivalent are not
-    considered part of the section titles. </p></li><li class="listitem "><p> Delete any section Entitled "Endorsements". Such a section may not be
-    included in the Modified Version. </p></li><li class="listitem "><p> Do not retitle any existing section to be Entitled "Endorsements" or
-    to conflict in title with any Invariant Section. </p></li><li class="listitem "><p> Preserve any Warranty Disclaimers. </p></li></ol></div><p> If the Modified Version includes new front-matter sections or appendices
-  that qualify as Secondary Sections and contain no material copied from the
+    therein.
+   </p></li><li class="listitem"><p>
+    Preserve all the Invariant Sections of the Document, unaltered in their
+    text and in their titles. Section numbers or the equivalent are not
+    considered part of the section titles.
+   </p></li><li class="listitem"><p>
+    Delete any section Entitled "Endorsements". Such a section may not be
+    included in the Modified Version.
+   </p></li><li class="listitem"><p>
+    Do not retitle any existing section to be Entitled "Endorsements" or to
+    conflict in title with any Invariant Section.
+   </p></li><li class="listitem"><p>
+    Preserve any Warranty Disclaimers.
+   </p></li></ol></div><p>
+  If the Modified Version includes new front-matter sections or appendices that
+  qualify as Secondary Sections and contain no material copied from the
   Document, you may at your option designate some or all of these sections as
   invariant. To do this, add their titles to the list of Invariant Sections in
   the Modified Version's license notice. These titles must be distinct from any
-  other section titles. </p><p> You may add a section Entitled "Endorsements", provided it contains
-  nothing but endorsements of your Modified Version by various parties--for
-  example, statements of peer review or that the text has been approved by an
-  organization as the authoritative definition of a standard. </p><p> You may add a passage of up to five words as a Front-Cover Text, and a
+  other section titles.
+ </p><p>
+  You may add a section Entitled "Endorsements", provided it contains nothing
+  but endorsements of your Modified Version by various parties--for example,
+  statements of peer review or that the text has been approved by an
+  organization as the authoritative definition of a standard.
+ </p><p>
+  You may add a passage of up to five words as a Front-Cover Text, and a
   passage of up to 25 words as a Back-Cover Text, to the end of the list of
   Cover Texts in the Modified Version. Only one passage of Front-Cover Text and
   one of Back-Cover Text may be added by (or through arrangements made by) any
   one entity. If the Document already includes a cover text for the same cover,
   previously added by you or by arrangement made by the same entity you are
-  acting on behalf of, you may not add another; but you may replace the old one,
-  on explicit permission from the previous publisher that added the old one. </p><p> The author(s) and publisher(s) of the Document do not by this License
-  give permission to use their names for publicity for or to assert or imply
-  endorsement of any Modified Version. </p><div xmlns:dm="urn:x-suse:ns:docmanager" class="sect1 bridgehead"><h2 class="title legal" id="id-1.11.3.33"><span class="name"> 5. COMBINING DOCUMENTS </span><a title="Permalink" class="permalink" href="#id-1.11.3.33">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><p> You may combine the Document with other documents released under this
+  acting on behalf of, you may not add another; but you may replace the old
+  one, on explicit permission from the previous publisher that added the old
+  one.
+ </p><p>
+  The author(s) and publisher(s) of the Document do not by this License give
+  permission to use their names for publicity for or to assert or imply
+  endorsement of any Modified Version.
+ </p><div class="sect4 bridgehead"><h5 class="title legal" id="id-1.12.33"><span class="name">
+    5. COMBINING DOCUMENTS
+  </span><a title="Permalink" class="permalink" href="#id-1.12.33">#</a></h5></div><p>
+  You may combine the Document with other documents released under this
   License, under the terms defined in section 4 above for modified versions,
   provided that you include in the combination all of the Invariant Sections of
   all of the original documents, unmodified, and list them all as Invariant
   Sections of your combined work in its license notice, and that you preserve
-  all their Warranty Disclaimers. </p><p> The combined work need only contain one copy of this License, and
-  multiple identical Invariant Sections may be replaced with a single copy. If
-  there are multiple Invariant Sections with the same name but different
-  contents, make the title of each such section unique by adding at the end of
-  it, in parentheses, the name of the original author or publisher of that
-  section if known, or else a unique number. Make the same adjustment to the
-  section titles in the list of Invariant Sections in the license notice of the
-  combined work. </p><p> In the combination, you must combine any sections Entitled "History" in
-  the various original documents, forming one section Entitled "History";
-  likewise combine any sections Entitled "Acknowledgements", and any sections
-  Entitled "Dedications". You must delete all sections Entitled "Endorsements". </p><div xmlns:dm="urn:x-suse:ns:docmanager" class="sect1 bridgehead"><h2 class="title legal" id="id-1.11.3.37"><span class="name"> 6. COLLECTIONS OF DOCUMENTS </span><a title="Permalink" class="permalink" href="#id-1.11.3.37">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><p> You may make a collection consisting of the Document and other documents
-  released under this License, and replace the individual copies of this License
-  in the various documents with a single copy that is included in the
+  all their Warranty Disclaimers.
+ </p><p>
+  The combined work need only contain one copy of this License, and multiple
+  identical Invariant Sections may be replaced with a single copy. If there are
+  multiple Invariant Sections with the same name but different contents, make
+  the title of each such section unique by adding at the end of it, in
+  parentheses, the name of the original author or publisher of that section if
+  known, or else a unique number. Make the same adjustment to the section
+  titles in the list of Invariant Sections in the license notice of the
+  combined work.
+ </p><p>
+  In the combination, you must combine any sections Entitled "History" in the
+  various original documents, forming one section Entitled "History"; likewise
+  combine any sections Entitled "Acknowledgements", and any sections Entitled
+  "Dedications". You must delete all sections Entitled "Endorsements".
+ </p><div class="sect4 bridgehead"><h5 class="title legal" id="id-1.12.37"><span class="name">
+    6. COLLECTIONS OF DOCUMENTS
+  </span><a title="Permalink" class="permalink" href="#id-1.12.37">#</a></h5></div><p>
+  You may make a collection consisting of the Document and other documents
+  released under this License, and replace the individual copies of this
+  License in the various documents with a single copy that is included in the
   collection, provided that you follow the rules of this License for verbatim
-  copying of each of the documents in all other respects. </p><p> You may extract a single document from such a collection, and distribute
-  it individually under this License, provided you insert a copy of this License
+  copying of each of the documents in all other respects.
+ </p><p>
+  You may extract a single document from such a collection, and distribute it
+  individually under this License, provided you insert a copy of this License
   into the extracted document, and follow this License in all other respects
-  regarding verbatim copying of that document. </p><div xmlns:dm="urn:x-suse:ns:docmanager" class="sect1 bridgehead"><h2 class="title legal" id="id-1.11.3.40"><span class="name"> 7. AGGREGATION WITH INDEPENDENT WORKS </span><a title="Permalink" class="permalink" href="#id-1.11.3.40">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><p> A compilation of the Document or its derivatives with other separate and
-  independent documents or works, in or on a volume of a storage or distribution
-  medium, is called an "aggregate" if the copyright resulting from the
-  compilation is not used to limit the legal rights of the compilation's users
-  beyond what the individual works permit. When the Document is included in an
-  aggregate, this License does not apply to the other works in the aggregate
-  which are not themselves derivative works of the Document. </p><p> If the Cover Text requirement of section 3 is applicable to these copies
-  of the Document, then if the Document is less than one half of the entire
-  aggregate, the Document's Cover Texts may be placed on covers that bracket the
-  Document within the aggregate, or the electronic equivalent of covers if the
-  Document is in electronic form. Otherwise they must appear on printed covers
-  that bracket the whole aggregate. </p><div xmlns:dm="urn:x-suse:ns:docmanager" class="sect1 bridgehead"><h2 class="title legal" id="id-1.11.3.43"><span class="name"> 8. TRANSLATION </span><a title="Permalink" class="permalink" href="#id-1.11.3.43">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><p> Translation is considered a kind of modification, so you may distribute
-  translations of the Document under the terms of section 4. Replacing Invariant
-  Sections with translations requires special permission from their copyright
-  holders, but you may include translations of some or all Invariant Sections in
-  addition to the original versions of these Invariant Sections. You may include
-  a translation of this License, and all the license notices in the Document,
-  and any Warranty Disclaimers, provided that you also include the original
-  English version of this License and the original versions of those notices and
-  disclaimers. In case of a disagreement between the translation and the
-  original version of this License or a notice or disclaimer, the original
-  version will prevail. </p><p> If a section in the Document is Entitled "Acknowledgements",
-  "Dedications", or "History", the requirement (section 4) to Preserve its Title
-  (section 1) will typically require changing the actual title. </p><div xmlns:dm="urn:x-suse:ns:docmanager" class="sect1 bridgehead"><h2 class="title legal" id="id-1.11.3.46"><span class="name"> 9. TERMINATION </span><a title="Permalink" class="permalink" href="#id-1.11.3.46">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><p> You may not copy, modify, sublicense, or distribute the Document except
-  as expressly provided for under this License. Any other attempt to copy,
-  modify, sublicense or distribute the Document is void, and will automatically
+  regarding verbatim copying of that document.
+ </p><div class="sect4 bridgehead"><h5 class="title legal" id="id-1.12.40"><span class="name">
+    7. AGGREGATION WITH INDEPENDENT WORKS
+  </span><a title="Permalink" class="permalink" href="#id-1.12.40">#</a></h5></div><p>
+  A compilation of the Document or its derivatives with other separate and
+  independent documents or works, in or on a volume of a storage or
+  distribution medium, is called an "aggregate" if the copyright resulting from
+  the compilation is not used to limit the legal rights of the compilation's
+  users beyond what the individual works permit. When the Document is included
+  in an aggregate, this License does not apply to the other works in the
+  aggregate which are not themselves derivative works of the Document.
+ </p><p>
+  If the Cover Text requirement of section 3 is applicable to these copies of
+  the Document, then if the Document is less than one half of the entire
+  aggregate, the Document's Cover Texts may be placed on covers that bracket
+  the Document within the aggregate, or the electronic equivalent of covers if
+  the Document is in electronic form. Otherwise they must appear on printed
+  covers that bracket the whole aggregate.
+ </p><div class="sect4 bridgehead"><h5 class="title legal" id="id-1.12.43"><span class="name">
+    8. TRANSLATION
+  </span><a title="Permalink" class="permalink" href="#id-1.12.43">#</a></h5></div><p>
+  Translation is considered a kind of modification, so you may distribute
+  translations of the Document under the terms of section 4. Replacing
+  Invariant Sections with translations requires special permission from their
+  copyright holders, but you may include translations of some or all Invariant
+  Sections in addition to the original versions of these Invariant Sections.
+  You may include a translation of this License, and all the license notices in
+  the Document, and any Warranty Disclaimers, provided that you also include
+  the original English version of this License and the original versions of
+  those notices and disclaimers. In case of a disagreement between the
+  translation and the original version of this License or a notice or
+  disclaimer, the original version will prevail.
+ </p><p>
+  If a section in the Document is Entitled "Acknowledgements", "Dedications",
+  or "History", the requirement (section 4) to Preserve its Title (section 1)
+  will typically require changing the actual title.
+ </p><div class="sect4 bridgehead"><h5 class="title legal" id="id-1.12.46"><span class="name">
+    9. TERMINATION
+  </span><a title="Permalink" class="permalink" href="#id-1.12.46">#</a></h5></div><p>
+  You may not copy, modify, sublicense, or distribute the Document except as
+  expressly provided for under this License. Any other attempt to copy, modify,
+  sublicense or distribute the Document is void, and will automatically
   terminate your rights under this License. However, parties who have received
   copies, or rights, from you under this License will not have their licenses
-  terminated so long as such parties remain in full compliance. </p><div xmlns:dm="urn:x-suse:ns:docmanager" class="sect1 bridgehead"><h2 class="title legal" id="id-1.11.3.48"><span class="name"> 10. FUTURE REVISIONS OF THIS LICENSE </span><a title="Permalink" class="permalink" href="#id-1.11.3.48">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><p> The Free Software Foundation may publish new, revised versions of the
-  GNU Free Documentation License from time to time. Such new versions will be
+  terminated so long as such parties remain in full compliance.
+ </p><div class="sect4 bridgehead"><h5 class="title legal" id="id-1.12.48"><span class="name">
+    10. FUTURE REVISIONS OF THIS LICENSE
+  </span><a title="Permalink" class="permalink" href="#id-1.12.48">#</a></h5></div><p>
+  The Free Software Foundation may publish new, revised versions of the GNU
+  Free Documentation License from time to time. Such new versions will be
   similar in spirit to the present version, but may differ in detail to address
-  new problems or concerns. See <a class="link" href="http://www.gnu.org/copyleft/" target="_blank">http://www.gnu.org/copyleft/</a>. </p><p> Each version of the License is given a distinguishing version number. If
-  the Document specifies that a particular numbered version of this License "or
-  any later version" applies to it, you have the option of following the terms
-  and conditions either of that specified version or of any later version that
-  has been published (not as a draft) by the Free Software Foundation. If the
-  Document does not specify a version number of this License, you may choose any
-  version ever published (not as a draft) by the Free Software Foundation. </p><div xmlns:dm="urn:x-suse:ns:docmanager" class="sect1 bridgehead"><h2 class="title legal" id="id-1.11.3.51"><span class="name"> ADDENDUM: How to use this License for your
-  documents </span><a title="Permalink" class="permalink" href="#id-1.11.3.51">#</a><a class="report-bug" rel="nofollow" target="_blank" href="https://github.com/SUSE/doc-modular/tree/main/articles/assembly-test.xml" title="Edit the source file for this section">Edit source</a></h2></div><div class="verbatim-wrap"><pre class="screen">   Copyright (c) YEAR YOUR NAME.
-   Permission is granted to copy, distribute and/or modify this document
-   under the terms of the GNU Free Documentation License, Version 1.2
-   or any later version published by the Free Software Foundation;
-   with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
-   A copy of the license is included in the section entitled “GNU
-   Free Documentation License”.</pre></div><p> If you have Invariant Sections, Front-Cover Texts and Back-Cover Texts,
-  replace the “with...Texts.” line with this: </p><div class="verbatim-wrap"><pre class="screen">   with the Invariant Sections being LIST THEIR TITLES, with the
-   Front-Cover Texts being LIST, and with the Back-Cover Texts being LIST.</pre></div><p> If you have Invariant Sections without Cover Texts, or some other
-  combination of the three, merge those two alternatives to suit the situation. </p><p> If your document contains nontrivial examples of program code, we
-  recommend releasing these examples in parallel under your choice of free
-  software license, such as the GNU General Public License, to permit their use
-  in free software. </p></div></div></div></div></div><div class="page-bottom"><div class="_share-print"><div class="online-contents share"><strong>Share this page: </strong><span class="share-buttons"><span class="_share-fb bottom-button">Facebook</span><span class="spacer"> • </span><span class="_share-in bottom-button">LinkedIn</span><span class="spacer"> • </span><span class="_share-tw bottom-button">Twitter</span><span class="spacer"> • </span><span class="_share-mail bottom-button">E-Mail</span></span></div><div class="print"><span class="_print-button bottom-button">Print this page</span></div><div class="clearme"></div></div></div></div><div id="_inward"></div></div><div id="_footer-wrap"><div id="_footer"><p>©
-        2022 
-        SUSE</p><ul><li><a href="https://jobs.suse.com/" target="_top">Careers</a></li><li><a href="https://www.suse.com/company/legal/" target="_top">Legal</a></li><li><a href="https://www.suse.com/company/about/" target="_top">About</a></li><li><a href="https://www.suse.com/contact/" target="_top">Contact Us</a></li></ul></div></div></body></html>
+  new problems or concerns. See
+  <a class="link" href="http://www.gnu.org/copyleft/" target="_blank">http://www.gnu.org/copyleft/</a>.
+ </p><p>
+  Each version of the License is given a distinguishing version number. If the
+  Document specifies that a particular numbered version of this License "or any
+  later version" applies to it, you have the option of following the terms and
+  conditions either of that specified version or of any later version that has
+  been published (not as a draft) by the Free Software Foundation. If the
+  Document does not specify a version number of this License, you may choose
+  any version ever published (not as a draft) by the Free Software Foundation.
+ </p><div class="sect4 bridgehead"><h5 class="title legal" id="id-1.12.51"><span class="name">
+    ADDENDUM: How to use this License for your documents
+  </span><a title="Permalink" class="permalink" href="#id-1.12.51">#</a></h5></div><div class="verbatim-wrap"><pre class="screen">Copyright (c) YEAR YOUR NAME.
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+A copy of the license is included in the section entitled “GNU
+Free Documentation License”.</pre></div><p>
+  If you have Invariant Sections, Front-Cover Texts and Back-Cover Texts,
+  replace the “with...Texts.” line with this:
+ </p><div class="verbatim-wrap"><pre class="screen">with the Invariant Sections being LIST THEIR TITLES, with the
+Front-Cover Texts being LIST, and with the Back-Cover Texts being LIST.</pre></div><p>
+  If you have Invariant Sections without Cover Texts, or some other combination
+  of the three, merge those two alternatives to suit the situation.
+ </p><p>
+  If your document contains nontrivial examples of program code, we recommend
+  releasing these examples in parallel under your choice of free software
+  license, such as the GNU General Public License, to permit their use in free
+  software.
+ </p></section></div></section></article><aside id="_side-toc-page" class="side-toc"><div class="side-title">On this page</div><div class="toc"><ul><li><span class="section"><a href="#systemd-timer-concept"><span class="title-number">1 </span><span class="title-name">The <code class="systemitem">systemd</code> timer concept</span></a></span></li><li><span class="section"><a href="#systemd-create-timer"><span class="title-number">2 </span><span class="title-name">Creating a timer</span></a></span></li><li><span class="section"><a href="#systemd-timer-manage"><span class="title-number">3 </span><span class="title-name">Managing timers</span></a></span></li><li><span class="section"><a href="#systemd-timer-types"><span class="title-number">4 </span><span class="title-name">Timer types</span></a></span></li><li><span class="section"><a href="#systemd-timer-test"><span class="title-number">5 </span><span class="title-name">Testing calendar entries</span></a></span></li><li><span class="section"><a href="#systemd-timer-catchup"><span class="title-number">6 </span><span class="title-name">Catching up on missed runs</span></a></span></li><li><span class="section"><a href="#systemd-timer-mailto"><span class="title-number">7 </span><span class="title-name">Getting notified by email if a timer fails</span></a></span></li><li><span class="section"><a href="#systemd-timer-user"><span class="title-number">8 </span><span class="title-name">Using timers as a regular user</span></a></span></li><li><span class="section"><a href="#systemd-timer-troubleshoot"><span class="title-number">9 </span><span class="title-name">Troubleshooting</span></a></span></li><li><span class="section"><a href="#id-1.11"><span class="title-number">10 </span><span class="title-name">Legal Notice</span></a></span></li><li><span class="appendix"><a href="#id-1.12"><span class="title-number">A </span><span class="title-name">GNU Free Documentation License</span></a></span></li></ul></div><div class="side-title">Share this page</div><ul class="share"><li><a id="_share-fb" href="#" title="Facebook"> </a></li><li><a id="_share-in" href="#" title="LinkedIn"> </a></li><li><a id="_share-tw" href="#" title="Twitter"> </a></li><li><a id="_share-mail" href="#" title="E-Mail"> </a></li><li><a id="_print-button" href="#" title="Print this page"> </a></li></ul> </aside></main><footer id="_footer"><div class="growth-inhibitor"><div class="copy"><span class="copy__rights">© SUSE
+                 2023</span></div></div></footer></body></html>

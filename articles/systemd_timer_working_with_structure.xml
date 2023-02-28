@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-model href="http://docbook.org/xml/5.2/rng/assembly.rng" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://docbook.org/xml/5.2/sch/assembly.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+
+<!DOCTYPE assembly
+[
+  <!ENTITY % entities SYSTEM "../common/entity-decl.ent">
+    %entities;
+]>
+<assembly version="5.2" xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns="http://docbook.org/ns/docbook" xml:lang="en">
+ <resources>
+  <resource href="../concepts/systemd-timer-concept.xml" xml:id="systemd-timer-concept">
+   <description>The systemd timer concept</description>
+  </resource>
+  <resource href="../tasks/systemd_timer_create.xml" xml:id="systemd-create-timer">
+   <description>Creating a systemd timer</description>
+  </resource>
+  <resource href="../references/systemd_timer_types.xml" xml:id="systemd-timer-types">
+   <description>The systemd timer types</description>
+  </resource>
+  <resource href="../tasks/systemd_timer_test_cal_entries.xml" xml:id="systemd-timer-test">
+   <description>systemd timer: Test calendar entries</description>
+  </resource>
+  <resource href="../tasks/systemd_timer_catching_up_missed_runs.xml" xml:id="systemd-timer-catchup">
+   <description>Catching up on missed runs</description>
+  </resource>
+  <resource href="../references/systemd_timer_manage.xml" xml:id="systemd-timer-manage">
+   <description>Managing systemd timers</description>
+  </resource>
+  <resource href="../tasks/systemd_timer_user.xml" xml:id="systemd-timer-user">
+   <description>Using systemd timers as a regular user</description>
+  </resource>
+  <resource href="../tasks/systemd_timer_troubleshoot.xml" xml:id="systemd-timer-troubleshoot">
+   <description>Troubleshooting systemd timers</description>
+  </resource>
+  <resource href="../common/legal.xml" xml:id="legal">
+   <description>Legal Notice</description>
+  </resource>
+  <resource href="../common/licenses.xml" xml:id="gnu-licenses">
+   <description>GNU Licenses</description>
+  </resource>
+  <resource href="../common/gfdl.xml" xml:id="gfdl">
+   <description>GNU Free Documentation License</description>
+  </resource>
+ </resources>
+
+ <structure xml:id="default">
+  <output renderas="article"/>
+  <merge>
+   <title>Working with &systemd; timers</title>
+   <subtitle/>
+   <dm:docmanager xmlns:dm="urn:x-suse:ns:docmanager">
+    <dm:bugtracker>
+     <dm:url>https://bugzilla.suse.com/enter_bug.cgi</dm:url>
+     <dm:component>Non-product-specific 20documentation</dm:component>
+     <dm:product>Smart Docs</dm:product>
+     <dm:assignee>fs@suse.com</dm:assignee>
+    </dm:bugtracker>
+    <dm:editurl>https://github.com/SUSE/doc-modular/tree/main/articles/</dm:editurl>
+    <dm:translation>no</dm:translation>
+   </dm:docmanager>
+   <abstract>
+    <para>
+     From running a backup script at regular intervals to starting a specific
+     process as soon as the machine boots, there are plenty of tasks that
+     require scheduling on a Linux system. cron has long been the go-to tool
+     for all scheduling needs, but the switch to &systemd; introduced a modern
+     way to schedule tasks: &systemd; timer units.
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>WHAT?</term>
+      <listitem>
+       <para>
+        &systemd; timer units as a replacement for cron.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>WHY?</term>
+      <listitem>
+       <para>
+        To give you a flexible mechanism for scheduling and managing jobs and
+        services.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>EFFORT?</term>
+      <listitem>
+       <para>
+        It takes 10 minutes to create an example &systemd; timer. You will need
+        up to 30 minutes to fully understand how &systemd; timers work.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>GOAL!</term>
+      <listitem>
+       <para>
+        Learn how to create systemd timers and understand how they work.
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <bridgehead renderas="sect3">Requirements</bridgehead>
+    <itemizedlist>
+     <listitem><para>Basic understanding of &systemd;.</para></listitem>
+     <listitem>
+      <para>
+       &rootuser; privileges. If you are planning to use &systemd; timers as a
+       regular user, refer to <xref linkend="systemd-timer-user"/> first.
+      </para>
+     </listitem>
+    </itemizedlist>
+   </abstract>
+  </merge>
+  <module resourceref="systemd-timer-concept">
+   <output renderas="section"/>
+  </module>
+  <module resourceref="systemd-create-timer">
+   <merge>
+    <title>Creating a timer</title>
+   </merge>
+  </module>
+  <module resourceref="systemd-timer-types">
+   <output renderas="section"/>
+   <merge>
+    <title>Timer types</title>
+   </merge>
+  </module>
+  <module resourceref="systemd-timer-test">
+   <output renderas="section"/>
+   <merge>
+    <title>Testing calendar entries</title>
+   </merge>
+  </module>
+  <module resourceref="systemd-timer-catchup">
+   <output renderas="section"/>
+   <merge>
+    <title>Catching up on missed runs</title>
+   </merge>
+  </module>
+  <module resourceref="systemd-timer-manage">
+   <output renderas="section"/>
+   <merge>
+    <title>Testing calendar entries</title>
+   </merge>
+  </module>
+  <module resourceref="systemd-timer-user">
+   <output renderas="section"/>
+   <merge>
+    <title>Using timers as a regular user</title>
+   </merge>
+  </module>
+  <module resourceref="systemd-timer-troubleshoot">
+   <merge>
+    <title>Troubleshooting</title>
+   </merge>
+  </module>
+  <module resourceref="legal"/>
+  <module resourceref="gnu-licenses">
+   <output renderas="appendix"/>
+   <module resourceref="gfdl"/>
+  </module>
+ </structure>
+
+  <structure xml:id="test_struct">
+  <output renderas="article"/>
+  <merge>
+   <title>Working with &systemd; timers</title>
+   <subtitle/>
+   <dm:docmanager xmlns:dm="urn:x-suse:ns:docmanager">
+    <dm:bugtracker>
+     <dm:url>https://bugzilla.suse.com/enter_bug.cgi</dm:url>
+     <dm:component>Non-product-specific 20documentation</dm:component>
+     <dm:product>Smart Docs</dm:product>
+     <dm:assignee>fs@suse.com</dm:assignee>
+    </dm:bugtracker>
+    <dm:editurl>https://github.com/SUSE/doc-modular/tree/main/articles/</dm:editurl>
+    <dm:translation>no</dm:translation>
+   </dm:docmanager>
+   <abstract>
+    <para>
+     From running a backup script at regular intervals to starting a specific
+     process as soon as the machine boots, there are plenty of tasks that
+     require scheduling on a Linux system. cron has long been the go-to tool
+     for all scheduling needs, but the switch to &systemd; introduced a modern
+     way to schedule tasks: &systemd; timer units.
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>WHAT?</term>
+      <listitem>
+       <para>
+        &systemd; timer units as a replacement for cron.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>WHY?</term>
+      <listitem>
+       <para>
+        To give you a flexible mechanism for scheduling and managing jobs and
+        services.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>EFFORT?</term>
+      <listitem>
+       <para>
+        It takes 10 minutes to create an example &systemd; timer. You will need
+        up to 30 minutes to fully understand how &systemd; timers work.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>GOAL!</term>
+      <listitem>
+       <para>
+        Learn how to create systemd timers and understand how they work.
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <bridgehead renderas="sect3">Requirements</bridgehead>
+    <itemizedlist>
+     <listitem><para>Basic understanding of &systemd;.</para></listitem>
+     <listitem>
+      <para>
+       &rootuser; privileges. If you are planning to use &systemd; timers as a
+       regular user, refer to <xref linkend="systemd-timer-user"/> first.
+      </para>
+     </listitem>
+    </itemizedlist>
+   </abstract>
+  </merge>
+  <module resourceref="systemd-timer-concept">
+   <output renderas="section"/>
+  </module>
+  <module resourceref="systemd-create-timer">
+   <merge>
+    <title>Creating a timer</title>
+   </merge>
+  </module>
+ </structure>
+
+ <!--
+ <relationships>
+  <relationship>
+   <association>For more information</association>
+   <instance />
+  </relationship>
+  <relationship>
+   <association>What's next?</association>
+   <instance />
+  </relationship>
+ </relationships>
+-->
+</assembly>

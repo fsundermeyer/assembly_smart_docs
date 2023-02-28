@@ -1,45 +1,44 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?xml-model href="http://docbook.org/xml/5.2/rng/docbook.rng" schematypens="http://relaxng.org/ns/structure/1.0"?>
-<?xml-model href="http://docbook.org/xml/5.2/sch/docbook.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE topic
 [
-  <!ENTITY % entities SYSTEM "../common/entity-decl.ent">
+  <!ENTITY % entities SYSTEM "../common/generic-entities.ent">
     %entities;
 ]>
-
-<topic version="5.2" xml:id="systemd-timer-test"
-  xmlns="http://docbook.org/ns/docbook"
-  xmlns:xlink="http://www.w3.org/1999/xlink">
+<topic xml:id="systemd-timer-test"
+       role="task" xml:lang="en"
+       xmlns="http://docbook.org/ns/docbook" version="5.2"
+       xmlns:its="http://www.w3.org/2005/11/its"
+       xmlns:xi="http://www.w3.org/2001/XInclude"
+       xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:trans="http://docbook.org/ns/transclusion">
   <title>&systemd; timer: Test calendar entries</title>
   <info>
-   <abstract>
-    <para>
-     &systemd; provides a tool for testing and creating calendar timer entries
-     for realtime timers
-    </para>
-   </abstract>
+    <abstract>
+      <para>
+        &systemd; provides a tool for testing and creating calendar timer entries for realtime
+        timers
+      </para>
+    </abstract>
   </info>
   <para>
-   When it comes to creating complex date entries for realtime timers,
-   &systemd; provides you with a tool that will help you with this task:
-   <command>systemd-analyze calendar</command>. It accepts the same argument
-   than the <literal>OnCalendar</literal> entry required to set up realtime
-   timers.
+    When it comes to creating complex date entries for realtime timers, &systemd; provides you with
+    a tool that will help you with this task: <command>systemd-analyze calendar</command>. It
+    accepts the same argument than the <literal>OnCalendar</literal> entry required to set up
+    realtime timers.
   </para>
   <para>
-   Here are some examples. You can concatenate several arguments separated by
-   space. If the term to test is correct, the output will show you when the
-   timer is triggered next (in loca tuime and UTC). It will also show the
-   string in <literal>Normalized form</literal>, it is recommended to use that
-   string in the timer file.
+    Here are some examples. You can concatenate several arguments separated by space. If the term
+    to test is correct, the output will show you when the timer is triggered next (in loca tuime
+    and UTC). It will also show the string in <literal>Normalized form</literal>, it is recommended
+    to use that string in the timer file.
   </para>
-  <screen>&prompt.root;systemd-analyze calendar "Tue,Sun *-*-* 01,03:00:00"
+  <screen>&prompt.sudo;systemd-analyze calendar "Tue,Sun *-*-* 01,03:00:00"
 Normalized form: Tue,Sun *-*-* 01,03:00:00
 Next elapse: Sun 2021-10-31 01:00:00 CEST
 (in UTC): Sat 2021-10-30 23:00:00 UTC
 From now: 3 days left
 
-&prompt.root;systemd-analyze calendar "Mon..Fri *-*-* 10:00" "Sat,Sun *-*-* 22:00"
+&prompt.sudo;systemd-analyze calendar "Mon..Fri *-*-* 10:00" "Sat,Sun *-*-* 22:00"
 Original form: Mon..Fri *-*-* 10:00
 Normalized form: Mon..Fri *-*-* 10:00:00
 Next elapse: Thu 2021-10-28 10:00:00 CEST
@@ -52,14 +51,13 @@ Next elapse: Sat 2021-10-30 22:00:00 CEST
 (in UTC): Sat 2021-10-30 20:00:00 UTC
 From now: 3 days left</screen>
   <para>
-   If you have reoccuring timers, you can use the <option>–iterations
-   <replaceable>N</replaceable></option> switch to list trigger times and test
-   whether they met your expectations. The argument
-   <replaceable>N</replaceable> specifies the number of iterations you would
-   like to test. The following example string triggers every 8 hours (starting
-   at 00:00:00) on Sundays:
+    If you have reoccuring timers, you can use the <option>–iterations
+    <replaceable>N</replaceable></option> switch to list trigger times and test whether they met
+    your expectations. The argument <replaceable>N</replaceable> specifies the number of iterations
+    you would like to test. The following example string triggers every 8 hours (starting at
+    00:00:00) on Sundays:
   </para>
-  <screen>&prompt.root;systemd-analyze calendar --iterations 5 "Sun *-*-* 0/08:00:00"
+  <screen>&prompt.sudo;systemd-analyze calendar --iterations 5 "Sun *-*-* 0/08:00:00"
 Original form: Sun *-*-* 0/08:00:00
 Normalized form: Sun *-*-* 00/8:00:00
 Next elapse: Sun 2021-10-31 00:00:00 CEST
